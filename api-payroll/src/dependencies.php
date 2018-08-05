@@ -31,7 +31,7 @@ $container['sessionApplication'] = function ($c) {
     $cryptographyService = new App\Service\CryptographyService($cryptographySettings);
 
     $mysqlSettings = $c->get('settings')['mysql'];
-    require dirname(__FILE__) . "/../src/application/cryptographyService.php";
-    $sessionApplication = new cryptographyService($mysqlSettings, $cryptographyService);
+    require dirname(__FILE__) . "/../src/application/SessionApplication.php";
+    $sessionApplication = new SessionApplication($mysqlSettings, $cryptographyService);
     return $sessionApplication;
 };
