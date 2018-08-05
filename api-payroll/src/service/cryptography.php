@@ -33,7 +33,7 @@ class cryptographyService{
 
             return "$ivInHex$hexedCipherText";
         } catch (Exception $e) {
-            throw new Exception('here was an error encrypting the string, contact the system administrator.');
+            throw new Exception('There was an error encrypting the string, contact the system administrator.');
             $this->logger->warning("There was an error in the cryptographyService->encryptString caused by: $e ");
         }
     }
