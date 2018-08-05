@@ -42,4 +42,7 @@ $app->get('/api/decrypt/password/{string}', function (Request $request, Response
     if ($cosa){
         return "yea";
     }
+    else{
+        "nah";
+    }
 });
