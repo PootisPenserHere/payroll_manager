@@ -15,5 +15,13 @@ return [
             'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+
+        // Cryptography settings
+        'cryptography' => [
+            'encryptionAlgorithm' => 'AES-256-CBC',
+            'encryptionPassword' => '7de431684c34cf2c898268cff71392f38c4175dde050c9ee69502b81571484e0',
+            'passwordHashCost' => '12',
+            'ivSize' => 16, // 128 bits
+        ],
     ],
 ];

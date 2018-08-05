@@ -17,3 +17,11 @@ $container['logger'] = function ($c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
+
+// Cryto functions
+$container['cryptographyService'] = function ($c) {
+    $cryptographySettings = $c->get('settings')['cryptography'];
+    require dirname(__FILE__) . "/../src/service/cryptography.php";
+    $cryptographyService = new cryptographyService($cryptographySettings);
+    return $cryptographyService;
+};
