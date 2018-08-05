@@ -1,5 +1,4 @@
 <?php
-namespace App\Application;
 
 class SessionApplication{
     // The to be connection
