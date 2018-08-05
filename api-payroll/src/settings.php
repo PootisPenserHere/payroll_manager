@@ -23,5 +23,22 @@ return [
             'passwordHashCost' => '12',
             'ivSize' => 16, // 128 bits
         ],
+
+        // Datanase settings
+        'mysql' => [
+            'host' => 'localhost',
+            'database' => 'payroll',
+            'user' => 'root',
+            'password' => '12345678',
+            'charset' => 'utf8',
+            'pdoConnectionOptions' => [
+                PDO::ATTR_EMULATE_PREPARES   => true, // The querys will be prepared by pdo instead of the dbms
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Errors will be returned as exceptions
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Data will be returned in associative arrays
+            ],
+            'databaseConnectionErrorMessage' => 'Unable to connect to the database.',
+            'databaseSelectQueryErrorMessage' => 'There was an error fetching the data.',
+            'databaseInsertQueryErrorMessage' => 'There was an error inserting the record.',
+        ],
     ],
 ];

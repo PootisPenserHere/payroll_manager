@@ -21,7 +21,16 @@ $container['logger'] = function ($c) {
 // Cryto functions
 $container['cryptographyService'] = function ($c) {
     $cryptographySettings = $c->get('settings')['cryptography'];
-    require dirname(__FILE__) . "/../src/service/cryptography.php";
-    $cryptographyService = new cryptographyService($cryptographySettings);
+    $cryptographyService = new App\Service\CryptographyService($cryptographySettings);
     return $cryptographyService;
+};
+
+// The session application
+$container['sessionApplication'] = function ($c) {
+    $cryptographySettings = $c->get('settings')['cryptography'];
+    $cryptographyService = new App\Service\CryptographyService($cryptographySettings);
+
+    $mysqlSettings = $c->get('settings')['mysql'];
+    $sessionApplication = new App\Application\SessionApplication($mysqlSettings, $cryptographyService);
+    return $sessionApplication;
 };

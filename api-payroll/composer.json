@@ -25,6 +25,12 @@
             "Tests\\": "tests/"
         }
     },
+    "autoload": {
+        "psr-4": {
+            "App\\Service\\": "src/service",
+            "App\\Application\\": "src/application"
+        }
+    },
     "config": {
         "process-timeout" : 0
     },

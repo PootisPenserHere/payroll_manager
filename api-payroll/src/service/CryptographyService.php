@@ -1,4 +1,6 @@
 <?php
+namespace App\Service;
+
 /**
  * A collection of functions to securely handling sensitive data,
  * passwords as well as making use of other crypto needs within
@@ -7,7 +9,7 @@
  * @property  settings
 */
 
-class cryptographyService{
+class CryptographyService{
 
     function __construct($cryptographySettings) {
         $this->settings = $cryptographySettings;
@@ -19,7 +21,7 @@ class cryptographyService{
      *
      * @param $text string
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     function encryptString($text){
         try {
