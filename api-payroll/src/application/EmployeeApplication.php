@@ -150,5 +150,29 @@ class EmployeeApplication{
 
         return $response;
     }
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    function getIdEmployeeTypeByCode($code){
+        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT 
+                                        et.id
+                                    FROM
+                                        employees e
+                                            INNER JOIN
+                                        employeeType et ON et.id = e.idEmployeeType
+                                    WHERE
+                                        e.code = :code), 0) AS id");
+
+        $stmt->execute(array(':code' => $code));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
 }
 ?>
