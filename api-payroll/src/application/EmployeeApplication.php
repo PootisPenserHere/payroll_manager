@@ -270,6 +270,16 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $code string
+     * @return array
+     */
+    function getEmployeeDataByCode($code){
+        $idEmployee = $this->getIdEmployeeTypeByCode($code);
+
+        return $this->proxyGetEmployeeDataById($idEmployee);
+    }
+
+    /**
      * @param $idPerson integer
      * @param $firstName  binary
      * @param $middleName binary

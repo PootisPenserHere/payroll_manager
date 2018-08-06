@@ -43,7 +43,7 @@ return [
 
         // Employee settings
         'employee' => [
-            'codeLength' => '5',
+            'codeLength' => '3',
         ],
     ],
 ];
