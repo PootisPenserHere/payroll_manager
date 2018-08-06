@@ -20,9 +20,9 @@ $app->get('/api/session', function (Request $request, Response $response, array 
 });
 
 $app->post('/api/session/login', function ($request, $response) {
-    $RequestData = $request->getParsedBody();
+    $requestData = $request->getParsedBody();
 
-    $data = $this->sessionApplication->newSession($RequestData['userName'], $RequestData['password']);
+    $data = $this->sessionApplication->newSession($requestData['userName'], $requestData['password']);
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
@@ -39,4 +39,12 @@ $app->get('/api/employee/types', function (Request $request, Response $response,
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->employeeApplication->listEmployeeTypes()));
+});
+
+$app->post('/api/employee', function ($request, $response) {
+    $requestData = $request->getParsedBody();
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->saveNewEmployee($requestData)));
 });
