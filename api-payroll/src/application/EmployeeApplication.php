@@ -222,7 +222,11 @@ class EmployeeApplication{
             "idPerson" => (int)$employeeData['idPerson'],
             "firstName" => $this->cryptographyService->decryptString($employeeData['firstName']),
             "middleName" => $this->cryptographyService->decryptString($employeeData['middleName']),
-            "lastName" => $this->cryptographyService->decryptString($employeeData['lastName']),
+
+            "lastName" => strlen($employeeData['lastName']) > 0
+                ? $this->cryptographyService->decryptString($employeeData['lastName'])
+                : '',
+            
             "email" => $this->cryptographyService->decryptString($employeeData['email']),
             "phone" => $employeeData['phone'],
             "code" => $employeeData['code'],
