@@ -18,7 +18,7 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-// Mysql connecrion
+// Mysql connection
 $container['mysql'] = function ($c) {
     $mysqlSettings = $c->get('settings')['mysql'];
 
@@ -32,8 +32,6 @@ $container['mysql'] = function ($c) {
 
     // Generic error messages
     $databaseConnectionErrorMessage = $mysqlSettings['databaseConnectionErrorMessage'];
-    $databaseSelectQueryErrorMessage = $mysqlSettings['databaseSelectQueryErrorMessage'];
-    $databaseInsertQueryErrorMessage = $mysqlSettings['databaseInsertQueryErrorMessage'];
 
     // Initiate the connection
     $dsn = "mysql:host=$host;dbname=$database;charset=$charset";
@@ -53,8 +51,14 @@ $container['cryptographyService'] = function ($c) {
     return $cryptographyService;
 };
 
+// Assert functions
+$container['asserts'] = function ($c) {
+    $asserts = new App\Service\Asserts();
+    return $asserts;
+};
+
 // The session application
 $container['sessionApplication'] = function ($c) {
-    $sessionApplication = new App\Application\SessionApplication($c['mysql'], $c['cryptographyService']);
+    $sessionApplication = new App\Application\SessionApplication($c['mysql'], $c['cryptographyService'], $c['asserts']);
     return $sessionApplication;
 };
