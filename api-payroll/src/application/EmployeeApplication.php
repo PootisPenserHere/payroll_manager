@@ -404,5 +404,44 @@ class EmployeeApplication{
             $this->pdo->rollback();
         }
     }
+
+    /**
+     * Intended for internal use
+     *
+     * This method will bring a list of ids of all the employees that are
+     * currently active in the system
+     *
+     * @return array
+     */
+    function getIdEmployeeFromAllActiveEmployees(){
+        $stmt = $this->pdo->prepare("SELECT 
+                                        id
+                                    FROM
+                                        employees
+                                    WHERE
+                                        status = 'ACTIVE';");
+        $stmt->execute();
+
+        $results = $stmt->fetchAll();
+
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results;
+    }
+
+    function listAllActiveEmployees(){
+        $ids = $this->getIdEmployeeFromAllActiveEmployees();
+
+        $result = array();
+
+        foreach($ids as $row){
+            $result[] = $this->proxyGetEmployeeDataById($row['id']);
+        }
+
+        return $result;
+    }
 }
 ?>

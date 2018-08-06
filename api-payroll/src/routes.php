@@ -41,6 +41,12 @@ $app->get('/api/employee/types', function (Request $request, Response $response,
         ->write(json_encode($this->employeeApplication->listEmployeeTypes()));
 });
 
+$app->get('/api/employee/all', function (Request $request, Response $response, array $args) {
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->listAllActiveEmployees()));
+});
+
 $app->post('/api/employee', function ($request, $response) {
     $requestData = $request->getParsedBody();
 
