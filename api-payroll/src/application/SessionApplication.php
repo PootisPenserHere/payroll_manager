@@ -1,13 +1,17 @@
 <?php
 namespace App\Application;
 
+use Exception;
+
 class SessionApplication{
     private $pdo;
     private $cryptographyService;
+    private $asserts;
 
-    function __construct($mysql, $cryptographyService){
+    function __construct($mysql, $cryptographyService, $asserts){
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
+        $this->asserts = $asserts;
 
         $this->databaseSelectQueryErrorMessage = 'There was an error inserting the record.';
     }
@@ -39,6 +43,8 @@ class SessionApplication{
      * @return mixed
      */
     function getPassword($userName){
+        $this->asserts->userName($userName);
+
         $stmt = $this->pdo->prepare("SELECT password FROM users WHERE name = :userName");
         $stmt->execute(array(':userName' => $userName));
         $results = $stmt->fetchAll();
@@ -56,6 +62,9 @@ class SessionApplication{
      * @throws Exception
      */
     function newSession($userName, $password){
+        $this->asserts->userName($userName);
+        $this->asserts->password($password);
+
         $storedPassword = $this->getPassword($userName);
 
         // If the credentials don't match anything in the the records

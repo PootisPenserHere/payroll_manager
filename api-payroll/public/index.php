@@ -17,6 +17,20 @@ session_start();
 $settings = require __DIR__ . '/../src/settings.php';
 $app = new \Slim\App($settings);
 
+// Custom error handling
+$c = $app->getContainer();
+$c['errorHandler'] = function ($c) {
+    return function ($request, $response, $exception) use ($c) {
+        $data = [
+            'status' => 'error',
+            'message' => $exception->getMessage()
+        ];
+        return $c['response']->withStatus(500)
+            ->withHeader('Content-Type', 'application/json')
+            ->write(json_encode($data));
+    };
+};
+
 // Set up dependencies
 require __DIR__ . '/../src/dependencies.php';
 
