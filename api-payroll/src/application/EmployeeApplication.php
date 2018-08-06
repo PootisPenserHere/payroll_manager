@@ -302,13 +302,40 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $idEmployee integer
+     * @param $code string
+     * @param $idEmployeeType integer
+     * @param $contractType string
+     */
+    function updateEmployee($idEmployee, $code, $idEmployeeType, $contractType){
+        try {
+            $stmt = $this->pdo->prepare("UPDATE employees 
+                                        SET 
+                                            idEmployeeType = :idEmployeeType,
+                                            code = :code,
+                                            contractType = :contractType
+                                        WHERE
+                                            id = :idEmployee");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idEmployeeType' => $idEmployeeType, ':code' => $code, ':contractType' => $contractType,
+                ':idEmployee' => $idEmployee));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
      * @param $requestData object
      * @return array
      */
-    function updateEmployee($requestData){
+    function updateEmployeeData($requestData){
         // Getting and validating the data
         $idEmployee = $requestData['idEmployee'];
         $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
+        $code = $requestData['code'];
 
         $firstName = $requestData['firstName'];
         $this->asserts->firstName($firstName);
@@ -345,6 +372,8 @@ class EmployeeApplication{
         // Update process
         $this->updatePerson($idPerson, $securedFirstName, $securedMiddleName, $securedLastName,
             $birthDate, $securedEmail, $phone);
+
+        $this->updateEmployee($idEmployee, $code, $idEmployeeType, $contractType);
 
         $response = array(
             "fullName" => "$firstName $middleName $lastName",

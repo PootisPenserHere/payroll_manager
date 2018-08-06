@@ -54,7 +54,7 @@ $app->put('/api/employee', function ($request, $response) {
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($this->employeeApplication->updateEmployee($requestData)));
+        ->write(json_encode($this->employeeApplication->updateEmployeeData($requestData)));
 });
 
 
