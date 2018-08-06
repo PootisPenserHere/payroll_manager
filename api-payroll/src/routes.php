@@ -79,10 +79,18 @@ $app->get('/api/employee/type/{code}', function (Request $request, Response $res
         ->write(json_encode($this->employeeApplication->getIdEmployeeTypeByCode($code)));
 });
 
-$app->get('/api/employee/{idEmployee}', function (Request $request, Response $response, array $args) {
+$app->get('/api/employee/id/{idEmployee}', function (Request $request, Response $response, array $args) {
     $idEmployee = $args['idEmployee'];
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->employeeApplication->proxyGetEmployeeDataById($idEmployee)));
+});
+
+$app->get('/api/employee/code/{code}', function (Request $request, Response $response, array $args) {
+    $code = $args['code'];
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->getEmployeeDataByCode($code)));
 });
