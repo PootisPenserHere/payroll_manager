@@ -6,7 +6,9 @@ class EmployeeApplication{
     private $cryptographyService;
     private $asserts;
 
-    function __construct($mysql, $cryptographyService, $asserts){
+    function __construct($employeeSettings, $mysql, $cryptographyService, $asserts){
+        $this->settings = $employeeSettings;
+
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
@@ -135,7 +137,7 @@ class EmployeeApplication{
         $idNewPerson = $this->saveNewPerson($securedFirstName, $securedMiddleName, $securedLastName,
             $birthDate, $securedEmail, $phone);
 
-        $employeeCode = $this->cryptographyService->pseudoRandomStringOpenssl(10);
+        $employeeCode = $this->cryptographyService->pseudoRandomStringOpenssl($this->settings['codeLength']);
         $idEmployee = $this->savePersonAsEmployee($idEmployeeType, $idNewPerson, $employeeCode, $contractType);
 
         $response = array(

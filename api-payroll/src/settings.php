@@ -40,5 +40,10 @@ return [
             'databaseSelectQueryErrorMessage' => 'There was an error fetching the data.',
             'databaseInsertQueryErrorMessage' => 'There was an error inserting the record.',
         ],
+
+        // Employee settings
+        'employee' => [
+            'codeLength' => '5',
+        ],
     ],
 ];

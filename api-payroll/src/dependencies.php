@@ -65,6 +65,8 @@ $container['sessionApplication'] = function ($c) {
 
 // The employee application
 $container['employeeApplication'] = function ($c) {
-    $employeeApplication = new App\Application\EmployeeApplication($c['mysql'], $c['cryptographyService'], $c['asserts']);
+    $employeeSettings = $c->get('settings')['employee'];
+    $employeeApplication = new App\Application\EmployeeApplication($employeeSettings,
+        $c['mysql'], $c['cryptographyService'], $c['asserts']);
     return $employeeApplication;
 };
