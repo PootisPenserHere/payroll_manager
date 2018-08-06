@@ -18,6 +18,34 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+// Mysql connecrion
+$container['mysql'] = function ($c) {
+    $mysqlSettings = $c->get('settings')['mysql'];
+
+    // The database parameters
+    $host = $mysqlSettings['host'];
+    $database = $mysqlSettings['database'];
+    $user = $mysqlSettings['user'];
+    $password = $mysqlSettings['password'];
+    $charset = $mysqlSettings['charset'];
+    $pdoConnectionOptions = $mysqlSettings['pdoConnectionOptions'];
+
+    // Generic error messages
+    $databaseConnectionErrorMessage = $mysqlSettings['databaseConnectionErrorMessage'];
+    $databaseSelectQueryErrorMessage = $mysqlSettings['databaseSelectQueryErrorMessage'];
+    $databaseInsertQueryErrorMessage = $mysqlSettings['databaseInsertQueryErrorMessage'];
+
+    // Initiate the connection
+    $dsn = "mysql:host=$host;dbname=$database;charset=$charset";
+    try {
+        $pdo = new PDO($dsn, $user, $password, $pdoConnectionOptions);
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        exit($databaseConnectionErrorMessage);
+    }
+    return $pdo;
+};
+
 // Cryto functions
 $container['cryptographyService'] = function ($c) {
     $cryptographySettings = $c->get('settings')['cryptography'];
@@ -27,8 +55,7 @@ $container['cryptographyService'] = function ($c) {
 
 // The session application
 $container['sessionApplication'] = function ($c) {
-    $mysqlSettings = $c->get('settings')['mysql'];
     require dirname(__FILE__) . "/../src/application/SessionApplication.php";
-    $sessionApplication = new SessionApplication($mysqlSettings, $c['cryptographyService']);
+    $sessionApplication = new SessionApplication($c['mysql'], $c['cryptographyService']);
     return $sessionApplication;
 };
