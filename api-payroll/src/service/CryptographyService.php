@@ -80,7 +80,7 @@ class CryptographyService{
      *
      * @param $plainPassword string
      * @param $encryptedPassword string
-     * @return boolean
+     * @return bool
     */
     function decryptPassword($plainPassword, $encryptedPassword) {
         return password_verify($plainPassword, $encryptedPassword);
