@@ -1,4 +1,5 @@
 <?php
+namespace App\Application;
 
 class SessionApplication{
     private $pdo;

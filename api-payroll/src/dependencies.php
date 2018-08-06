@@ -55,7 +55,6 @@ $container['cryptographyService'] = function ($c) {
 
 // The session application
 $container['sessionApplication'] = function ($c) {
-    require dirname(__FILE__) . "/../src/application/SessionApplication.php";
-    $sessionApplication = new SessionApplication($c['mysql'], $c['cryptographyService']);
+    $sessionApplication = new App\Application\SessionApplication($c['mysql'], $c['cryptographyService']);
     return $sessionApplication;
 };
