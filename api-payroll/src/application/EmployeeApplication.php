@@ -5,6 +5,7 @@ class EmployeeApplication{
     private $pdo;
     private $cryptographyService;
     private $asserts;
+    private $settings;
 
     function __construct($employeeSettings, $mysql, $cryptographyService, $asserts){
         $this->settings = $employeeSettings;
@@ -20,7 +21,12 @@ class EmployeeApplication{
      * @return array
      */
     function listEmployeeTypes(){
-        $stmt = $this->pdo->prepare("SELECT id, name  FROM employeeType WHERE status = 'ACTIVE'");
+        $stmt = $this->pdo->prepare("SELECT 
+                                        id, name
+                                    FROM
+                                        employeeType
+                                    WHERE
+                                        status = 'ACTIVE'");
         $stmt->execute();
 
         $results = $stmt->fetchAll();
@@ -226,7 +232,7 @@ class EmployeeApplication{
             "lastName" => strlen($employeeData['lastName']) > 0
                 ? $this->cryptographyService->decryptString($employeeData['lastName'])
                 : '',
-            
+
             "email" => $this->cryptographyService->decryptString($employeeData['email']),
             "phone" => $employeeData['phone'],
             "code" => $employeeData['code'],
