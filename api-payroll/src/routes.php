@@ -62,5 +62,5 @@ $app->get('/api/employee/{idEmployee}', function (Request $request, Response $re
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($this->employeeApplication->getEmployeeDataById($idEmployee)));
+        ->write(json_encode($this->employeeApplication->proxyGetEmployeeDataById($idEmployee)));
 });

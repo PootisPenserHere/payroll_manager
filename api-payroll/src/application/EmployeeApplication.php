@@ -175,9 +175,15 @@ class EmployeeApplication{
         return $results[0]['id'];
     }
 
+    /**
+     * Gets the data associated with the employee
+     *
+     * @param $idEmployee
+     * @return array
+     */
     function getEmployeeDataById($idEmployee){
         $stmt = $this->pdo->prepare("SELECT 
-                                        p.id,
+                                        p.id AS idPerson,
                                         p.firstName,
                                         p.middleName,
                                         IFNULL(p.lastName, '') AS lastName,
@@ -200,6 +206,32 @@ class EmployeeApplication{
         $stmt = null;
 
         return $results[0];
+    }
+
+    /**
+     * Acts as a man in the middle for the getEmployeeDataById method to decrypt the contents
+     * and make the necesary data manipulations
+     *
+     * @param $idEmployee
+     * @return array
+     */
+    function proxyGetEmployeeDataById($idEmployee){
+        $employeeData = $this->getEmployeeDataById($idEmployee);
+
+        $response = array(
+            "idPerson" => (int)$employeeData['idPerson'],
+            "firstName" => $this->cryptographyService->decryptString($employeeData['firstName']),
+            "middleName" => $this->cryptographyService->decryptString($employeeData['middleName']),
+            "lastName" => $this->cryptographyService->decryptString($employeeData['lastName']),
+            "email" => $this->cryptographyService->decryptString($employeeData['email']),
+            "phone" => $employeeData['phone'],
+            "code" => $employeeData['code'],
+            "contractType" => $employeeData['contractType']
+
+        );
+
+        return $response;
+
     }
 }
 ?>
