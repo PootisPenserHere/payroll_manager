@@ -387,5 +387,22 @@ class EmployeeApplication{
 
         return $response;
     }
+
+    function disableEmployeeRecord($idEmployee){
+        try {
+            $stmt = $this->pdo->prepare("UPDATE employees 
+                                        SET 
+                                            status = 'INACTIVE'
+                                        WHERE
+                                            id = :idEmployee");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idEmployee' => $idEmployee));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
 }
 ?>
