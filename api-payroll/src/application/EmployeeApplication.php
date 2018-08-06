@@ -1,6 +1,8 @@
 <?php
 namespace App\Application;
 
+use phpDocumentor\Reflection\Types\Integer;
+
 class EmployeeApplication{
     private $pdo;
     private $cryptographyService;
@@ -40,9 +42,9 @@ class EmployeeApplication{
     }
 
     /**
-     * @param $firstName varbinary
-     * @param $middleName varbinary
-     * @param $lastName varbinary or null
+     * @param $firstName binary
+     * @param $middleName binary
+     * @param $lastName binary or null
      * @param $birthDate date yyyy-mm-dd
      * @param $email string
      * @param $phone string
@@ -158,6 +160,30 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $idEmployee
+     * @return Integer
+     */
+    function getIdPersonByIdEmployee($idEmployee){
+        $stmt = $this->pdo->prepare("SELECT 
+                                        COALESCE((SELECT 
+                                                        idPerson
+                                                    FROM
+                                                        employees
+                                                    WHERE
+                                                        id = :idEmployee),
+                                                0) AS id");
+
+        $stmt->execute(array(':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
+
+    /**
      * @param $code
      * @return mixed
      */
@@ -241,7 +267,96 @@ class EmployeeApplication{
         );
 
         return $response;
+    }
 
+    /**
+     * @param $idPerson integer
+     * @param $firstName  binary
+     * @param $middleName binary
+     * @param $lastName binary
+     * @param $birthDate date
+     * @param $email binary
+     * @param $phone string
+     */
+    function updatePerson($idPerson, $firstName, $middleName, $lastName, $birthDate, $email, $phone){
+        try {
+            $stmt = $this->pdo->prepare("UPDATE persons 
+                                        SET 
+                                            firstName = :firstName,
+                                            middleName = :middleName,
+                                            lastName = :lastName,
+                                            birthDate = :birthDate,
+                                            email = :email,
+                                            phone = :phone
+                                        WHERE
+                                            id = :idPerson");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':firstName' => $firstName, ':middleName' => $middleName, ':lastName' => $lastName,
+                ':birthDate' => $birthDate, ':email' => $email, ':phone' => $phone, ':idPerson' => $idPerson));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
+     * @param $requestData object
+     * @return array
+     */
+    function updateEmployee($requestData){
+        // Getting and validating the data
+        $idEmployee = $requestData['idEmployee'];
+        $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
+
+        $firstName = $requestData['firstName'];
+        $this->asserts->firstName($firstName);
+
+        $middleName = $requestData['middleName'];
+        $this->asserts->middleName($middleName);
+
+        $lastName = isset($requestData['lastName']) ? $requestData['lastName'] : null;
+
+        $birthDate = $requestData['birthDate'];
+        $this->asserts->birthDate($birthDate);
+
+        $email = $requestData['email'];
+        $this->asserts->email($email);
+
+        $phone = $requestData['phone'];
+        $this->asserts->phone($phone);
+
+        $idEmployeeType = $requestData{'idEmployeeType'};
+        $contractType = $requestData{'contractType'};
+
+        // Encrypting the sensitive data
+        $securedFirstName = $this->cryptographyService->encryptString($firstName);
+        $securedMiddleName = $this->cryptographyService->encryptString($middleName);
+
+        if (isset($lastName)) {
+            $securedLastName = $this->cryptographyService->encryptString($lastName);
+        } else {
+            $securedLastName = null;
+        }
+
+        $securedEmail = $this->cryptographyService->encryptString($email);
+
+        // Update process
+        $this->updatePerson($idPerson, $securedFirstName, $securedMiddleName, $securedLastName,
+            $birthDate, $securedEmail, $phone);
+
+        $response = array(
+            "fullName" => "$firstName $middleName $lastName",
+            "idEmployee" => $idEmployee,
+            "email" => $email,
+            "phone" => $phone,
+            "birthDate" => $birthDate,
+            "idEmployeeType" => $idEmployeeType,
+            "contractType" => $contractType
+        );
+
+        return $response;
     }
 }
 ?>
