@@ -174,5 +174,32 @@ class EmployeeApplication{
 
         return $results[0]['id'];
     }
+
+    function getEmployeeDataById($idEmployee){
+        $stmt = $this->pdo->prepare("SELECT 
+                                        p.id,
+                                        p.firstName,
+                                        p.middleName,
+                                        IFNULL(p.lastName, '') AS lastName,
+                                        p.email,
+                                        p.phone,
+                                        e.code,
+                                        e.contractType
+                                    FROM
+                                        employees e
+                                            INNER JOIN
+                                        persons p ON p.id = e.idPerson
+                                    WHERE
+                                        e.id = :idEmployee");
+
+        $stmt->execute(array(':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0];
+    }
 }
 ?>

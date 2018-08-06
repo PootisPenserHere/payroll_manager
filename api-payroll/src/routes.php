@@ -56,3 +56,11 @@ $app->get('/api/employee/type/{code}', function (Request $request, Response $res
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->employeeApplication->getIdEmployeeTypeByCode($code)));
 });
+
+$app->get('/api/employee/{idEmployee}', function (Request $request, Response $response, array $args) {
+    $idEmployee = $args['idEmployee'];
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->getEmployeeDataById($idEmployee)));
+});
