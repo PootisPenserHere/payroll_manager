@@ -49,6 +49,22 @@ $app->post('/api/employee', function ($request, $response) {
         ->write(json_encode($this->employeeApplication->saveNewEmployee($requestData)));
 });
 
+$app->put('/api/employee', function ($request, $response) {
+    $requestData = $request->getParsedBody();
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->updateEmployeeData($requestData)));
+});
+
+$app->DELETE('/api/employee/{idEmployee}', function (Request $request, Response $response, array $args) {
+    $idEmployee = $args['idEmployee'];
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->disableEmployeeRecord($idEmployee)));
+});
+
 $app->get('/api/employee/type/{code}', function (Request $request, Response $response, array $args) {
     $code = $args['code'];
 
