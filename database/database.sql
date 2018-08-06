@@ -45,3 +45,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO users (idPerson, name, password)
   VALUES (1, 'sloth', '$2y$12$51mfESaLEGXDT4u9Bd9kiOHEpaJ1Bx4SEcVwsU5K6jVPMNkrnpJAa');
+
+DROP TABLE IF EXISTS employeeType;
+CREATE TABLE IF NOT EXISTS `employeeType` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL comment 'Type or rol that the employee can be',
+  `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
+  PRIMARY KEY  (`id`),
+  UNIQUE (`name`)
+);
+
+INSERT INTO employeeType (name) VALUES ('Chofer'),
+                                        ('Cargador'),
+                                        ('Auxiliar');

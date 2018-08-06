@@ -34,3 +34,9 @@ $app->post('/api/session/logout', function (Request $request, Response $response
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->sessionApplication->destroySession()));
 });
+
+$app->get('/api/employee/types', function (Request $request, Response $response, array $args) {
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->listEmployeeTypes()));
+});
