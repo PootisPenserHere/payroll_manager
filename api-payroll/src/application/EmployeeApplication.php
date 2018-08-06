@@ -5,6 +5,7 @@ class EmployeeApplication{
     private $pdo;
     private $cryptographyService;
     private $asserts;
+    private $settings;
 
     function __construct($employeeSettings, $mysql, $cryptographyService, $asserts){
         $this->settings = $employeeSettings;
@@ -20,7 +21,12 @@ class EmployeeApplication{
      * @return array
      */
     function listEmployeeTypes(){
-        $stmt = $this->pdo->prepare("SELECT id, name  FROM employeeType WHERE status = 'ACTIVE'");
+        $stmt = $this->pdo->prepare("SELECT 
+                                        id, name
+                                    FROM
+                                        employeeType
+                                    WHERE
+                                        status = 'ACTIVE'");
         $stmt->execute();
 
         $results = $stmt->fetchAll();
@@ -149,6 +155,93 @@ class EmployeeApplication{
         );
 
         return $response;
+    }
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    function getIdEmployeeTypeByCode($code){
+        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT 
+                                        et.id
+                                    FROM
+                                        employees e
+                                            INNER JOIN
+                                        employeeType et ON et.id = e.idEmployeeType
+                                    WHERE
+                                        e.code = :code), 0) AS id");
+
+        $stmt->execute(array(':code' => $code));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
+
+    /**
+     * Gets the data associated with the employee
+     *
+     * @param $idEmployee
+     * @return array
+     */
+    function getEmployeeDataById($idEmployee){
+        $stmt = $this->pdo->prepare("SELECT 
+                                        p.id AS idPerson,
+                                        p.firstName,
+                                        p.middleName,
+                                        IFNULL(p.lastName, '') AS lastName,
+                                        p.email,
+                                        p.phone,
+                                        e.code,
+                                        e.contractType
+                                    FROM
+                                        employees e
+                                            INNER JOIN
+                                        persons p ON p.id = e.idPerson
+                                    WHERE
+                                        e.id = :idEmployee");
+
+        $stmt->execute(array(':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0];
+    }
+
+    /**
+     * Acts as a man in the middle for the getEmployeeDataById method to decrypt the contents
+     * and make the necesary data manipulations
+     *
+     * @param $idEmployee
+     * @return array
+     */
+    function proxyGetEmployeeDataById($idEmployee){
+        $employeeData = $this->getEmployeeDataById($idEmployee);
+
+        $response = array(
+            "idPerson" => (int)$employeeData['idPerson'],
+            "firstName" => $this->cryptographyService->decryptString($employeeData['firstName']),
+            "middleName" => $this->cryptographyService->decryptString($employeeData['middleName']),
+
+            "lastName" => strlen($employeeData['lastName']) > 0
+                ? $this->cryptographyService->decryptString($employeeData['lastName'])
+                : '',
+
+            "email" => $this->cryptographyService->decryptString($employeeData['email']),
+            "phone" => $employeeData['phone'],
+            "code" => $employeeData['code'],
+            "contractType" => $employeeData['contractType']
+
+        );
+
+        return $response;
+
     }
 }
 ?>
