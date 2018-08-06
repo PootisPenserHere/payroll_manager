@@ -85,4 +85,18 @@ class CryptographyService{
     function decryptPassword($plainPassword, $encryptedPassword) {
         return password_verify($plainPassword, $encryptedPassword);
     }
+
+    /**
+     * Generates a psudo random string using openssl
+     *
+     * @param $length integer
+     * @return string
+     */
+    function pseudoRandomStringOpenssl($length){
+
+        $string = openssl_random_pseudo_bytes($length);
+        $string = bin2hex($string);
+
+        return substr($string, 0, $length);
+    }
 }

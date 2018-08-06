@@ -64,11 +64,12 @@ DROP TABLE IF EXISTS employees;
 CREATE TABLE IF NOT EXISTS `employees` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `idEmployeeType` INT UNSIGNED NOT NULL comment 'Defines the rol within the company',
-  `numero` VARCHAR(100) NOT NULL comment 'A code to reference the employee',
+  `idPerson` INT UNSIGNED NOT NULL comment 'Defines the rol within the company',
+  `code` VARCHAR(100) NOT NULL comment 'A code to reference the employee',
   `contractType` ENUM('INTERNO', 'EXTERNO') NOT NULL comment 'The type of contract',
   `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
   PRIMARY KEY  (`id`),
-  UNIQUE (`name`)
+  UNIQUE (`code`)
 );

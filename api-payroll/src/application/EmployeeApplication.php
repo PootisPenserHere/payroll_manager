@@ -31,6 +31,15 @@ class EmployeeApplication{
         return $results;
     }
 
+    /**
+     * @param $firstName varbinary
+     * @param $middleName varbinary
+     * @param $lastName varbinary or null
+     * @param $birthDate date yyyy-mm-dd
+     * @param $email string
+     * @param $phone string
+     * @return integer
+     */
     function saveNewPerson($firstName, $middleName, $lastName, $birthDate, $email, $phone){
         $this->asserts->firstName($firstName);
         $this->asserts->middleName($middleName);
@@ -57,6 +66,37 @@ class EmployeeApplication{
         }
     }
 
+    /**
+     * @param $idEmployeeType integer
+     * @param $idPerson integer
+     * @param $code string
+     * @param $contractType string
+     * @return mixed
+     */
+    function savePersonAsEmployee($idEmployeeType, $idPerson, $code, $contractType){
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType) 
+                                          VALUES (:idEmployeeType, :idPerson, :code, :contractType)");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idEmployeeType' => $idEmployeeType, ':idPerson' => $idPerson, ':code' => $code,
+                ':contractType' => $contractType));
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+
+            return $id;
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+            throw new Exception('There was an error while trying to save a new employee.');
+            $this->logger->warning("There was an error in the EmployeeApplication->savePersonAsEmployee caused by: $e ");
+        }
+    }
+
+    /**
+     * @param $requestData object
+     * @return array
+     */
     function saveNewEmployee($requestData){
         // Getting and validating the data
         $firstName = $requestData['firstName'];
@@ -76,26 +116,37 @@ class EmployeeApplication{
         $phone = $requestData['phone'];
         $this->asserts->phone($phone);
 
-        $employeeType = $requestData{'employeeType'};
+        $idEmployeeType = $requestData{'idEmployeeType'};
         $contractType = $requestData{'contractType'};
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);
         $securedMiddleName = $this->cryptographyService->encryptString($middleName);
 
-        if(isset($lastName)){
+        if (isset($lastName)) {
             $securedLastName = $this->cryptographyService->encryptString($lastName);
-        }
-        else {
+        } else {
             $securedLastName = null;
         }
 
         $securedEmail = $this->cryptographyService->encryptString($email);
 
-        $idNewperson = $this->saveNewPerson($securedFirstName, $securedMiddleName, $securedLastName,
+        // Here begins the saving process
+        $idNewPerson = $this->saveNewPerson($securedFirstName, $securedMiddleName, $securedLastName,
             $birthDate, $securedEmail, $phone);
 
-        return $idNewperson;
+        $employeeCode = $this->cryptographyService->pseudoRandomStringOpenssl(10);
+        $idEmployee = $this->savePersonAsEmployee($idEmployeeType, $idNewPerson, $employeeCode, $contractType);
+
+        $response = array(
+            "fullName" => "$firstName $middleName $lastName",
+            "employeeCode" => $employeeCode,
+            "idEmployee" => $idEmployee,
+            "email" => $email,
+            "phone" => $phone
+        );
+
+        return $response;
     }
 }
 ?>
