@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/config/notification-middleware.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/account/activate/activate.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/account/settings/settings.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/administration/administration.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/administration/user-management/user-management.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/account/password/password.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/util/entity-utils.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/error/error-boundary.spec.tsx">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/reducers/application-profile.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/error/error-boundary-route.spec.tsx">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/auth/private-route.spec.tsx">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/modules/account/register/register.reducer.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/layout/header/header.spec.tsx">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/config/axios-interceptor.spec.ts">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/layout/header/menus/account.spec.tsx">
+  </file>
+  <file path="/var/www/html/payroll_manager/front-end/src/test/javascript/spec/app/shared/reducers/authentication.spec.ts">
+  </file>
+</testExecutions>
