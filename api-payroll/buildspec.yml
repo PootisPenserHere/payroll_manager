@@ -14,8 +14,9 @@ phases:
       - echo Entered the build phase...
       - echo Build started on `date`
       - composer test
+      - sudo docker-compose up --build -d
   post_build:
     commands:
       - echo Entered the post_build phase...
+      - sudo docker-compose down --rmi all -v
       - echo Build completed on `date`
-
