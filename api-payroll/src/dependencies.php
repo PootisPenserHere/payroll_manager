@@ -34,7 +34,7 @@ $container['mysql'] = function ($c) {
     $databaseConnectionErrorMessage = $mysqlSettings['databaseConnectionErrorMessage'];
 
     // Initiate the connection
-    $dsn = "mysql:host=$host;dbname=$database;charset=$charset";
+    $dsn = "mysql:host=$host;port=3307;dbname=$database;charset=$charset";
     try {
         $pdo = new PDO($dsn, $user, $password, $pdoConnectionOptions);
     } catch (Exception $e) {
