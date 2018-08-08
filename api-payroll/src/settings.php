@@ -27,6 +27,7 @@ return [
         // Datanase settings
         'mysql' => [
             'host' => 'mysql',
+            'port' => '3307',
             'database' => 'payroll',
             'user' => 'root',
             'password' => '12345678',
