@@ -1,0 +1,26 @@
+version: '3'
+services:
+  api:
+    container_name: payroll_api
+    build: api-payroll/
+    ports:
+     - "8085:80"
+    volumes:
+     - api-payroll:/var/www/site
+    depends_on:
+      - mysql
+  mysql:
+    container_name: payroll_mysql
+    restart: always
+    build: database
+    ports:
+     - "3306:3306"
+    volumes:
+      - my-datavolume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: '12345678'
+      MYSQL_USER: 'sloth'
+      MYSQL_PASS: '12345678'
+volumes:
+  api-payroll:
+  my-datavolume:
