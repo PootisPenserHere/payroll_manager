@@ -6,20 +6,21 @@ services:
     ports:
      - "8085:80"
     volumes:
-     - .:/var/www/site
+     - api-payroll:/var/www/site
     depends_on:
       - mysql
   mysql:
     container_name: payroll_mysql
     restart: always
-    image: mysql:5.7
+    build: database
     ports:
      - "3306:3306"
+    volumes:
+      - my-datavolume:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: '12345678'
       MYSQL_USER: 'sloth'
       MYSQL_PASS: '12345678'
-    volumes:
-      - my-datavolume:/var/lib/mysql
 volumes:
+  api-payroll:
   my-datavolume:
