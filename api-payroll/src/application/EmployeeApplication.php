@@ -38,7 +38,12 @@ class EmployeeApplication{
         }
         $stmt = null;
 
-        return $results;
+        $employeeTypes = array();
+        foreach($results as $row){
+            $employeeTypes[] = array('id' => (int)$row['id'], 'name' => $row['name']);
+        }
+
+        return $employeeTypes;
     }
 
     /**
