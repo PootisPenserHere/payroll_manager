@@ -13,8 +13,10 @@ services:
     container_name: payroll_mysql
     restart: always
     build: database
+    expose:
+      - "3307"
     ports:
-     - "3306:3306"
+     - "3307:3307"
     volumes:
       - my-datavolume:/var/lib/mysql
     environment:
