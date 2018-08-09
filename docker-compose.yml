@@ -6,7 +6,7 @@ services:
     ports:
      - "8085:80"
     volumes:
-     - api-payroll:/var/www/site
+     - ./api-payroll:/var/www/site
     depends_on:
       - mysql
   mysql:
