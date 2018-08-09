@@ -18,7 +18,7 @@ console.log(getbaseUrl('html/'));
         success:function(data){
             console.log(JSON.stringify(data));
             if(data["status"] == "success"){
-                console.log("yhi");
+                redirect("http://stackoverflow.com");
             }else if(data["status"] == "success" || (data["status"] === undefined)){
                 $('#modalLoginError').modal('show');
                 document.getElementById('modalLoginErrorBody').innerHTML = "The server didn't respond in time, please try again or refresh this page.";
@@ -31,4 +31,8 @@ console.log(getbaseUrl('html/'));
             }
         },
     });
+}
+
+function redirect(url){
+    window.location.replace(url);
 }
