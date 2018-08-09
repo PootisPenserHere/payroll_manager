@@ -69,7 +69,7 @@ class SessionApplication{
 
         // If the credentials don't match anything in the the records
         if(!isset($storedPassword)){
-            throw new Exception('The user or password didnt match, please try again.');
+            return false;
         }
 
         // Already has a session
@@ -82,7 +82,22 @@ class SessionApplication{
             return true;
         }
         else{
-            return false;
+            throw new Exception('The user or password didnt match, please try again.');
+        }
+    }
+
+    /**
+     * @param $userName
+     * @param $password
+     * @return array
+     * @throws Exception
+     */
+    function login($userName, $password){
+        if($this->newSession($userName, $password)){
+            return array('status' => 'success', 'message' => 'Logged in successfully.');
+        }
+        else{
+            throw new Exception('The user or password didnt match, please try again.');
         }
     }
 
