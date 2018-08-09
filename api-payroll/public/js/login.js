@@ -16,13 +16,19 @@ console.log(getbaseUrl('html/'));
         dataType: 'json',
         data: parametros,
         success:function(data){
-            console.log(JSON.stringify(data))
-
-
+            console.log(JSON.stringify(data));
+            if(data["status"] == "success"){
+                console.log("yhi");
+            }else if(data["status"] == "success" || (data["status"] === undefined)){
+                $('#modalLoginError').modal('show');
+                document.getElementById('modalLoginErrorBody').innerHTML = "The server didn't respond in time, please try again or refresh this page.";
+            }
         },
-        error:function(x,e,h) {
-                console.log(x);
-                console.log(e + " " + h);
+        error:function(x) {
+            if (x.status==500){
+                $('#modalLoginError').modal('show');
+                document.getElementById('modalLoginErrorBody').innerHTML = "The user or password didnt match, please try again";
+            }
         },
     });
 }
