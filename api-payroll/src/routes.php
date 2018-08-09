@@ -22,14 +22,14 @@ $app->get('/api/session', function (Request $request, Response $response, array 
 $app->post('/api/session/login', function ($request, $response) {
     $requestData = $request->getParsedBody();
 
-    $data = $this->sessionApplication->newSession($requestData['userName'], $requestData['password']);
+    $data = $this->sessionApplication->login($requestData['userName'], $requestData['password']);
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($data));
 });
 
-$app->post('/api/session/logout', function (Request $request, Response $response, array $args) {
+$app->get('/api/session/logout', function (Request $request, Response $response, array $args) {
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->sessionApplication->destroySession()));
