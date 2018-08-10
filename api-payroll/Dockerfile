@@ -20,21 +20,10 @@ ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
-# Expose apache
-#EXPOSE 80
-
-# Copy this repo into place.
-#ADD . /var/www/site
 WORKDIR /var/www/site
 
-# Testing permisions
-#RUN chmod 777 -R .
-
-# Installing dependencies
-#RUN composer install
-
-# Unit tests
-#RUN composer test
+COPY composer.json .
+RUN composer install
 
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
