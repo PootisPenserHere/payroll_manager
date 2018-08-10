@@ -45,5 +45,16 @@ class Asserts{
             throw new Exception($errorMessage);
         }
     }
+
+    /**
+     * @param $number integer
+     * @param $errorMessage string
+     * @throws Exception
+     */
+    function higherThanZero($number, $errorMessage){
+        if($number <= 0){
+            throw new Exception($errorMessage);
+        }
+    }
 }
 ?>

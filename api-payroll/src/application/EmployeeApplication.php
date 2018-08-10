@@ -58,7 +58,7 @@ class EmployeeApplication{
     function saveNewPerson($firstName, $middleName, $lastName, $birthDate, $email, $phone){
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
         $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
-        $this->asserts->isNotEmpty($middleName, "The birth date can't be empty.");
+        $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
@@ -89,6 +89,10 @@ class EmployeeApplication{
      * @return mixed
      */
     function savePersonAsEmployee($idEmployeeType, $idPerson, $code, $contractType){
+        $this->asserts->higherThanZero($idEmployeeType, "idEmployeeType must be higher than 0");
+        $this->asserts->higherThanZero($idPerson, "idPerson must be higher than 0");
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+        $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
         try {
             $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType) 
                                           VALUES (:idEmployeeType, :idPerson, :code, :contractType)");
@@ -177,6 +181,8 @@ class EmployeeApplication{
      * @return Integer
      */
     function getIdPersonByIdEmployee($idEmployee){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
         $stmt = $this->pdo->prepare("SELECT 
                                         COALESCE((SELECT 
                                                         idPerson
@@ -229,6 +235,8 @@ class EmployeeApplication{
      * @return array
      */
     function getEmployeeDataById($idEmployee){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
         $stmt = $this->pdo->prepare("SELECT 
                                         p.id AS idPerson,
                                         p.firstName,
@@ -263,6 +271,8 @@ class EmployeeApplication{
      * @return array
      */
     function proxyGetEmployeeDataById($idEmployee){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
         $employeeData = $this->getEmployeeDataById($idEmployee);
 
         $response = array(
@@ -306,6 +316,13 @@ class EmployeeApplication{
      * @param $phone string
      */
     function updatePerson($idPerson, $firstName, $middleName, $lastName, $birthDate, $email, $phone){
+        $this->asserts->higherThanZero($idPerson, "idPerson must be higher than 0");
+        $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
+        $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
+        $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->isNotEmpty($email, "The email can't be empty.");
+        $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
+
         try {
             $stmt = $this->pdo->prepare("UPDATE persons 
                                         SET 
@@ -335,6 +352,11 @@ class EmployeeApplication{
      * @param $contractType string
      */
     function updateEmployee($idEmployee, $code, $idEmployeeType, $contractType){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployeeType, "idEmployeeType must be higher than 0");
+        $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
+
         try {
             $stmt = $this->pdo->prepare("UPDATE employees 
                                         SET 
@@ -361,7 +383,10 @@ class EmployeeApplication{
     function updateEmployeeData($requestData){
         // Getting and validating the data
         $idEmployee = $requestData['idEmployee'];
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
         $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
+        $this->asserts->higherThanZero($idPerson, "idPerson must be higher than 0");
 
         $code = $requestData['code'];
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
@@ -390,7 +415,10 @@ class EmployeeApplication{
         $this->asserts->betweenLength($phone, 10, 10, "The phone number must be 10 digits without special characters.");
 
         $idEmployeeType = $requestData{'idEmployeeType'};
+        $this->asserts->higherThanZero($idEmployeeType, "idEmployeeType must be higher than 0");
+
         $contractType = $requestData{'contractType'};
+        $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);
@@ -424,6 +452,8 @@ class EmployeeApplication{
     }
 
     function disableEmployeeRecord($idEmployee){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
         try {
             $stmt = $this->pdo->prepare("UPDATE employees 
                                         SET 
@@ -467,6 +497,9 @@ class EmployeeApplication{
         return $results;
     }
 
+    /**
+     * @return array
+     */
     function listAllActiveEmployees(){
         $ids = $this->getIdEmployeeFromAllActiveEmployees();
 
