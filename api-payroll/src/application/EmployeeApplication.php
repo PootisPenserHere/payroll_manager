@@ -56,11 +56,11 @@ class EmployeeApplication{
      * @return integer
      */
     function saveNewPerson($firstName, $middleName, $lastName, $birthDate, $email, $phone){
-        $this->asserts->firstName($firstName);
-        $this->asserts->middleName($middleName);
-        $this->asserts->birthDate($birthDate);
-        $this->asserts->email($email);
-        $this->asserts->phone($phone);
+        $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
+        $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
+        $this->asserts->isNotEmpty($middleName, "The birth date can't be empty.");
+        $this->asserts->isNotEmpty($email, "The email can't be empty.");
+        $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
         try {
             $stmt = $this->pdo->prepare("INSERT INTO persons (firstName, middleName, lastName, birthDate, email, phone) 
@@ -115,21 +115,29 @@ class EmployeeApplication{
     function saveNewEmployee($requestData){
         // Getting and validating the data
         $firstName = $requestData['firstName'];
-        $this->asserts->firstName($firstName);
+        $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
+        $this->asserts->isString($firstName, "The first name must be a string.");
+        $this->asserts->betweenLength($firstName, 1, 50, "The first name must have a length between 1 and 50 characters.");
 
         $middleName = $requestData['middleName'];
-        $this->asserts->middleName($middleName);
+        $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
+        $this->asserts->isString($middleName, "The middle name must be a string.");
+        $this->asserts->betweenLength($middleName, 1, 50, "The middle name must have a length between 1 and 50 characters.");
 
-        $lastName = isset($requestData['lastName']) ? $requestData['lastName'] : null;
+        $lastName = isset($requestData['lastName'])
+            ? $requestData['lastName']
+            : null;
 
         $birthDate = $requestData['birthDate'];
-        $this->asserts->birthDate($birthDate);
+        $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
 
         $email = $requestData['email'];
-        $this->asserts->email($email);
+        $this->asserts->isNotEmpty($email, "The email can't be empty.");
+        $this->asserts->betweenLength($email, 1, 100, "The middle name must have a length between 1 and 100 characters.");
 
         $phone = $requestData['phone'];
-        $this->asserts->phone($phone);
+        $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
+        $this->asserts->betweenLength($phone, 10, 10, "The phone number must be 10 digits without special characters.");
 
         $idEmployeeType = $requestData{'idEmployeeType'};
         $contractType = $requestData{'contractType'};
@@ -189,10 +197,12 @@ class EmployeeApplication{
     }
 
     /**
-     * @param $code
-     * @return mixed
+     * @param $code string
+     * @return integer
      */
     function getIdEmployeeTypeByCode($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
         $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT 
                                         et.id
                                     FROM
@@ -279,6 +289,8 @@ class EmployeeApplication{
      * @return array
      */
     function getEmployeeDataByCode($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
         $idEmployee = $this->getIdEmployeeTypeByCode($code);
 
         return $this->proxyGetEmployeeDataById($idEmployee);
@@ -350,24 +362,32 @@ class EmployeeApplication{
         // Getting and validating the data
         $idEmployee = $requestData['idEmployee'];
         $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
+
         $code = $requestData['code'];
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
         $firstName = $requestData['firstName'];
-        $this->asserts->firstName($firstName);
+        $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
+        $this->asserts->isString($firstName, "The first name must be a string.");
+        $this->asserts->betweenLength($firstName, 1, 50, "The first name must have a length between 1 and 50 characters.");
 
         $middleName = $requestData['middleName'];
-        $this->asserts->middleName($middleName);
+        $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
+        $this->asserts->isString($middleName, "The middle name must be a string.");
+        $this->asserts->betweenLength($middleName, 1, 50, "The middle name must have a length between 1 and 50 characters.");
 
         $lastName = isset($requestData['lastName']) ? $requestData['lastName'] : null;
 
         $birthDate = $requestData['birthDate'];
-        $this->asserts->birthDate($birthDate);
+        $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
 
         $email = $requestData['email'];
-        $this->asserts->email($email);
+        $this->asserts->isNotEmpty($email, "The email can't be empty.");
+        $this->asserts->betweenLength($email, 1, 100, "The middle name must have a length between 1 and 100 characters.");
 
         $phone = $requestData['phone'];
-        $this->asserts->phone($phone);
+        $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
+        $this->asserts->betweenLength($phone, 10, 10, "The phone number must be 10 digits without special characters.");
 
         $idEmployeeType = $requestData{'idEmployeeType'};
         $contractType = $requestData{'contractType'};
