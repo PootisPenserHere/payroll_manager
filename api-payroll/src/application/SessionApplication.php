@@ -43,7 +43,9 @@ class SessionApplication{
      * @return mixed
      */
     function getPassword($userName){
-        $this->asserts->userName($userName);
+        $this->asserts->isNotEmpty($userName, "The username can't be empty");
+        $this->asserts->isString($userName, "The username must be a string.");
+        $this->asserts->betweenLength($userName, 1, 50, "The username must have a length between 1 and 50 characters.");
 
         $stmt = $this->pdo->prepare("SELECT password FROM users WHERE name = :userName");
         $stmt->execute(array(':userName' => $userName));
@@ -62,8 +64,12 @@ class SessionApplication{
      * @throws Exception
      */
     function newSession($userName, $password){
-        $this->asserts->userName($userName);
-        $this->asserts->password($password);
+        $this->asserts->isNotEmpty($userName, "The username can't be empty");
+        $this->asserts->isString($userName, "The username must be a string.");
+        $this->asserts->betweenLength($userName, 1, 50, "The username must have a length between 1 and 50 characters.");
+        $this->asserts->isNotEmpty($password, "The password can't be empty");
+        $this->asserts->isString($password, "The password must be a string.");
+        $this->asserts->betweenLength($password, 1, 50, "The password must have a length between 1 and 50 characters.");
 
         $storedPassword = $this->getPassword($userName);
 
@@ -93,6 +99,14 @@ class SessionApplication{
      * @throws Exception
      */
     function login($userName, $password){
+        $this->asserts->isNotEmpty($userName, "The username can't be empty");
+        $this->asserts->isString($userName, "The username must be a string.");
+        $this->asserts->betweenLength($userName, 1, 50, "The username must have a length between 1 and 50 characters.");
+        $this->asserts->isNotEmpty($password, "The password can't be empty");
+        $this->asserts->isString($password, "The password must be a string.");
+        $this->asserts->betweenLength($password, 1, 50, "The password must have a length between 1 and 50 characters.");
+
+
         if($this->newSession($userName, $password)){
             return array('status' => 'success', 'message' => 'Logged in successfully.');
         }
