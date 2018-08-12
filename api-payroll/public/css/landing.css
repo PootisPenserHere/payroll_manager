@@ -7,7 +7,7 @@ body {
     color: black;
 }
 
-#cuerpo{
+#newViewBody{
     top:17%;
     left:1%;
     width:98%;
@@ -23,34 +23,34 @@ body {
 
 }
 
-#cuerpo .modal-body{
+#newViewBody .modal-body{
     color: #000;
     border:none;
 }
 
-#cuerpo .panel-default{
+#newViewBody .panel-default{
     border: 3px solid #4A89A5;
     border-radius: 5px;
 }
 
-#cuerpo .panel > .panel-heading {
+#newViewBody .panel > .panel-heading {
     background-image: none;
     background-color: #4A89A5;
     color: white;
     border-radius: 0;
 }
 
-#cuerpo .btn-default{
+#newViewBody .btn-default{
     border: 2px solid #62655F;
     background: #F9DFAF;
 }
 
-#cuerpo .btn-default:hover{
+#newViewBody .btn-default:hover{
     border: 2px solid #62655F;
     background: #F9DFAF;
 }
 
-#cuerpo .alert-success{
+#newViewBody .alert-success{
     background: #C6E97C;
 }
 
