@@ -32,18 +32,18 @@ function loadEmployeeTypes(){
             let responseText = $.parseJSON(x["responseText"]);
 
             if (x.status==0) {
-                $('#modal_error_internet').modal('show');
+                $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
-                $('#modal_error_404').modal('show');
+                $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modal_server_response_error').modal('show');
-                document.getElementById('server_response_error').innerHTML = responseText['message'];
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
-                $('#modal_error_parsererror').modal('show');
+                $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
-                $('#modal_error_timeout').modal('show');
+                $('#modalErrorTimeout').modal('show');
             } else {
-                $('#modal_error_other').modal('show');
+                $('#modalErrorOther').modal('show');
             }
         },
     });
@@ -69,25 +69,25 @@ function saveNewEmployee(){
         dataType: 'json',
         data: parameters,
         success:function(data){
-            $('#modal_server_response_success').modal('show');
-            document.getElementById('server_response_success').innerHTML = 'The employee ' + data['fullName'] + ' has been created with the code ' + data['employeeCode'];
+            $('#modalServerResponseSuccess').modal('show');
+            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['fullName'] + ' has been created with the code ' + data['employeeCode'];
         },
         error:function(x,e) {
             let responseText = $.parseJSON(x["responseText"]);
 
             if (x.status==0) {
-                $('#modal_error_internet').modal('show');
+                $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
-                $('#modal_error_404').modal('show');
+                $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modal_server_response_error').modal('show');
-                document.getElementById('server_response_error').innerHTML = responseText['message'];
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
-                $('#modal_error_parsererror').modal('show');
+                $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
-                $('#modal_error_timeout').modal('show');
+                $('#modalErrorTimeout').modal('show');
             } else {
-                $('#modal_error_other').modal('show');
+                $('#modalErrorOther').modal('show');
             }
         },
     });

@@ -54,15 +54,12 @@ body {
     background: #C6E97C;
 }
 
-#modal_header_error{
+.modalHeaderError{
     background-color: #d9534f;
 }
 
-#modal_header_respuesa_servidor_error{
-    background-color: #d9534f;
-}
 
-#modal_header_respuesa_servidor_success{
+.modalHeaderSuccess{
     background-color: #5bc0de;
 }
 
