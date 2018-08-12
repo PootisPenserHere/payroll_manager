@@ -5,6 +5,8 @@ services:
     build: api-payroll/
     ports:
      - "8085:80"
+    volumes:
+      - ./volumes/apache-logs:/var/log/apache2
     depends_on:
       - mysql
   mysql:
@@ -16,10 +18,11 @@ services:
     ports:
      - "3307:3307"
     volumes:
-      - my-datavolume:/var/lib/mysql
+      - ./volumes/mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: '12345678'
       MYSQL_USER: 'sloth'
       MYSQL_PASS: '12345678'
 volumes:
-  my-datavolume:
+  mysql-data:
+  apache-logs:
