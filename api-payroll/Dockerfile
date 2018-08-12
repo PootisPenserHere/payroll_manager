@@ -1,3 +1,13 @@
+# Stage 1 - the build process
+FROM composer:1.7.1 as build-deps
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+WORKDIR /root
+
+COPY composer.json .
+RUN composer install
+
+# Stage 2 - the production environment
 FROM ubuntu:16.04
 
 # Updating
@@ -21,9 +31,11 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
 WORKDIR /var/www/site
+COPY . .
+COPY --from=build-deps /root .
 
-COPY composer.json .
-RUN composer install
+RUN touch logs/app.log
+RUN chmod 777 logs/app.log
 
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf

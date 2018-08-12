@@ -5,8 +5,6 @@ services:
     build: api-payroll/
     ports:
      - "8085:80"
-    volumes:
-     - ./api-payroll:/var/www/site
     depends_on:
       - mysql
   mysql:
@@ -24,5 +22,4 @@ services:
       MYSQL_USER: 'sloth'
       MYSQL_PASS: '12345678'
 volumes:
-  api-payroll:
   my-datavolume:
