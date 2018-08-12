@@ -4,8 +4,9 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 
 WORKDIR /root
 
-COPY composer.json .
+COPY . .
 RUN composer install
+RUN composer test
 
 # Stage 2 - the production environment
 FROM ubuntu:16.04
@@ -22,10 +23,7 @@ php7.0-gd \
 php7.0-intl \
 php7.0-xml \
 php7.0-mysql \
-php7.0-mcrypt \
-php7.0-zip \
-curl \
-composer
+php7.0-mcrypt
 
 # Enable apache mods
 RUN a2enmod php7.0
@@ -42,7 +40,6 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
 WORKDIR /var/www/site
-COPY . .
 COPY --from=build-deps /root .
 
 RUN touch logs/app.log
