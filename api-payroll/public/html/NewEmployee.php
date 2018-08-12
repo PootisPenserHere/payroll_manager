@@ -37,7 +37,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="newEmployeeBirthDate">Birth date</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeBirthDate" name="newEmployeeBirthDate" type="text" class="form-control input-md">
+                                <input id="newEmployeeBirthDate" name="newEmployeeBirthDate" type="text" class="form-control input-md datepicker">
                             </div>
                         </div>
                     </div>

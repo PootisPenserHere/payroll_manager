@@ -3,6 +3,12 @@
  */
 $(document).ready(function(){
     loadEmployeeTypes();
+
+    $('.datepicker').datepicker({
+        format: "yyyy/mm/dd",
+        autoclose: true
+    });
+
 });
 
 /**
