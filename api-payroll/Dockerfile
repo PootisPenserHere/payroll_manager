@@ -46,7 +46,7 @@ RUN touch logs/app.log
 RUN chmod 777 logs/app.log
 
 # Update the default apache site
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+ADD docker/apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 # By default start up apache in the foreground
 CMD /usr/sbin/apache2ctl -D FOREGROUND
