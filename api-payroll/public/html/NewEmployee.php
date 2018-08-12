@@ -61,9 +61,9 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="employeeType">Rol</label>
+                            <label class="col-md-4 control-label" for="newEmployeeType">Rol</label>
                             <div class="col-md-5">
-                                <select class="form-control input-md" name="employeeType" id="employeeType">
+                                <select class="form-control input-md" name="newEmployeeType" id="newEmployeeType">
                                     <option>Employee type</option>
                                 </select>
                             </div>
@@ -71,9 +71,9 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="contractType">Contract type</label>
+                            <label class="col-md-4 control-label" for="NewEmpployyContractType">Contract type</label>
                             <div class="col-md-5">
-                                <select class="form-control input-md" name="contractType" id="contractType">
+                                <select class="form-control input-md" name="NewEmpployyContractType" id="NewEmpployyContractType">
                                     <option>Contract type</option>
                                     <option value="INTERNO">interno</option>
                                     <option value="EXTERNO">Externo</option>
