@@ -111,7 +111,7 @@ if(!isset($_SESSION['userName'])){
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>The server has encountered an internal error, please try again later.</p>
+                    <p id="internal-server-error-message"">The server has encountered an internal error, please try again later.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -159,7 +159,7 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_otro" class="modal fade" role="dialog">
+    <div id="modal_error_other" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
@@ -188,7 +188,7 @@ if(!isset($_SESSION['userName'])){
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_server_response_error">
+                <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>

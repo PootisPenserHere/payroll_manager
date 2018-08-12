@@ -29,18 +29,21 @@ function loadEmployeeTypes(){
             });
         },
         error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
             if (x.status==0) {
                 $('#modal_error_internet').modal('show');
             } else if(x.status==404) {
                 $('#modal_error_404').modal('show');
             } else if(x.status==500) {
-                $('#modal_error_500').modal('show');
+                $('#modal_server_response_error').modal('show');
+                document.getElementById('server_response_error').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
                 $('#modal_error_parsererror').modal('show');
             } else if(e=='timeout'){
                 $('#modal_error_timeout').modal('show');
             } else {
-                $('#modal_error_otro').modal('show');
+                $('#modal_error_other').modal('show');
             }
         },
     });
@@ -66,26 +69,25 @@ function saveNewEmployee(){
         dataType: 'json',
         data: parameters,
         success:function(data){
-            $(data).each(function(i,v){
-                $('#employeeType').append(
-                    '<option value="' + v.id + '">'+ v.name + '</option>'
-                );
-            });
+            $('#modal_server_response_success').modal('show');
+            document.getElementById('server_response_success').innerHTML = 'The employee ' + data['fullName'] + ' has been created with the code ' + data['employeeCode'];
         },
         error:function(x,e) {
-            console.log(JSON.stringify(x));
+            let responseText = $.parseJSON(x["responseText"]);
+
             if (x.status==0) {
                 $('#modal_error_internet').modal('show');
             } else if(x.status==404) {
                 $('#modal_error_404').modal('show');
             } else if(x.status==500) {
-                $('#modal_error_500').modal('show');
+                $('#modal_server_response_error').modal('show');
+                document.getElementById('server_response_error').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
                 $('#modal_error_parsererror').modal('show');
             } else if(e=='timeout'){
                 $('#modal_error_timeout').modal('show');
             } else {
-                $('#modal_error_otro').modal('show');
+                $('#modal_error_other').modal('show');
             }
         },
     });

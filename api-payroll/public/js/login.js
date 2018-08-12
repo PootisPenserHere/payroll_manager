@@ -29,7 +29,6 @@ function processLogin() {
         dataType: 'json',
         data: parameters,
         success:function(data){
-            console.log(JSON.stringify(data));
             if(data["status"] == "success"){
                 window.location.replace(baseUrl + '/html/landing.php');
 
