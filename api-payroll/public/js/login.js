@@ -1,10 +1,5 @@
-function getbaseUrl(uriPath){
-    var url = window.location.href;
-    return url.substring(0, url.indexOf(uriPath));
-}
-
 function processLogin() {
-    var baseUrl = getbaseUrl('/html/');
+    var baseUrl = getbaseUrl();
 
     var parametros = {
         "userName":$('#userName').val(),

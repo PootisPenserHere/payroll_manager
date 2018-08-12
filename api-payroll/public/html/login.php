@@ -50,4 +50,5 @@ if(isset($_SESSION['userName'])){
 </div>
 
 <script src="../js/login.js"></script>
+<script src="../js/getBaseUrl.js"></script>
 <link href="../css/login.css" rel="stylesheet">

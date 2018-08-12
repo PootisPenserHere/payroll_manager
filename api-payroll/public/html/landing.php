@@ -238,4 +238,5 @@ if(!isset($_SESSION['userName'])){
     </div>
 </body>
 
+<script src="../js/getBaseUrl.js"></script>
 <link href="../css/panel.css" rel="stylesheet">
