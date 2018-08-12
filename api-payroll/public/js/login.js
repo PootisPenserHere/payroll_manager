@@ -4,21 +4,22 @@ function getbaseUrl(uriPath){
 }
 
 function processLogin() {
-console.log(getbaseUrl('html/'));
+    var baseUrl = getbaseUrl('/html/');
+
     var parametros = {
         "userName":$('#userName').val(),
         "password":$('#password').val()
     };
 
     $.ajax({
-        url: getbaseUrl('/html/') + '/index.php/api/session/login',
+        url: baseUrl + '/index.php/api/session/login',
         type: 'POST',
         dataType: 'json',
         data: parametros,
         success:function(data){
             console.log(JSON.stringify(data));
             if(data["status"] == "success"){
-                redirect("http://stackoverflow.com");
+                redirect(baseUrl + '/html/landing.php');
             }else if(data["status"] == "success" || (data["status"] === undefined)){
                 $('#modalLoginError').modal('show');
                 document.getElementById('modalLoginErrorBody').innerHTML = "The server didn't respond in time, please try again or refresh this page.";

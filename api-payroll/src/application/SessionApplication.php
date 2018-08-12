@@ -41,6 +41,7 @@ class SessionApplication{
     /**
      * @param $userName string
      * @return mixed
+     * @throws Exception
      */
     function getPassword($userName){
         $this->asserts->isNotEmpty($userName, "The username can't be empty");
@@ -51,7 +52,7 @@ class SessionApplication{
         $stmt->execute(array(':userName' => $userName));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception('The user or password didnt match, please try again.');
         }
         $stmt = null;
         return $results[0]['password'];
