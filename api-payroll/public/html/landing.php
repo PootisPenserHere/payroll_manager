@@ -26,28 +26,28 @@ if(!isset($_SESSION['userName'])){
                     </button>
                 </div>
                 <div class="collapse navbar-collapse navbar-menubuilder">
-                        <ul class="nav navbar-nav navbar-left">
+                        <ul class="nav navbar-nav navbar-left" id="nevatation-options">
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Employees<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" data-nav_accion="views/cliente.php" onclick="vista_crear_nuevo_salon_evento();"> New employee</a></li>
-                                    <li><a href="#" data-nav_accion="views/clientess.php" onclick="vista_crear_nuevo_coach();"> Modify employee</a></li>
+                                    <li><a href="#" data-nav_accion="NewEmployee.php"> New employee</a></li>
+                                    <li><a href="#" data-nav_accion="EditEmployee.php"> Modify employee</a></li>
                                 </ul>
                             </li>
 
 
                             <li>
-                                <a href="#" onclick="vista_calendario();"><span class="glyphicon glyphicon-tasks"></span> Management</a>
+                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-tasks"></span> Management</a>
                             </li>
 
                             <li>
-                                <a href="#" onclick="vista_calendario();"><span class="glyphicon glyphicon-wrench"></span> Change password</a>
+                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-wrench"></span> Change password</a>
                             </li>
                         </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
+                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> logout</a>
                         </li>
                     </ul>
 
