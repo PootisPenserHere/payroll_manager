@@ -1,26 +1,38 @@
+/**
+ * Maps the enter key to the login action
+ */
 $(document).keypress(function(e) {
     if(e.which == 13) {
         processLogin();
     }
 });
 
+/**
+ * Takes the input from the username and password fields and send theem to the backend
+ * to be validated
+ *
+ * The response from the api will contain a status that will determine if the login was
+ * successful or not and a message that will contain feedback which can be used to
+ * display errors to the user
+ */
 function processLogin() {
     var baseUrl = getbaseUrl();
 
-    var parametros = {
+    var parameters = {
         "userName":$('#userName').val(),
         "password":$('#password').val()
     };
 
     $.ajax({
-        url: baseUrl + '/index.php/api/session/login',
+        url: baseUrl + '/api/session/login',
         type: 'POST',
         dataType: 'json',
-        data: parametros,
+        data: parameters,
         success:function(data){
             console.log(JSON.stringify(data));
             if(data["status"] == "success"){
-                redirect(baseUrl + '/html/landing.php');
+                window.location.replace(baseUrl + '/html/landing.php');
+
             }else if(data["status"] == "success" || (data["status"] === undefined)){
                 $('#modalLoginError').modal('show');
                 document.getElementById('modalLoginErrorBody').innerHTML = "The server didn't respond in time, please try again or refresh this page.";
@@ -33,8 +45,4 @@ function processLogin() {
             }
         },
     });
-}
-
-function redirect(url){
-    window.location.replace(url);
 }

@@ -47,7 +47,7 @@ if(!isset($_SESSION['userName'])){
                         </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../logout.php"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
+                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
                         </li>
                     </ul>
 
@@ -239,4 +239,5 @@ if(!isset($_SESSION['userName'])){
 </body>
 
 <script src="../js/getBaseUrl.js"></script>
-<link href="../css/panel.css" rel="stylesheet">
+<script src="../js/landing.js"></script>
+<link href="../css/landing.css" rel="stylesheet">

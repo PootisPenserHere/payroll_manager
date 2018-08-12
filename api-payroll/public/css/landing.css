@@ -1,21 +1,10 @@
 body {
     background-color: #e3e3e3;
-    /* Se agrego color blanco a letra en panel en general*/
     color: #000;
 }
 
-/*Cambia el color del date picker a negro para permitir su visibilidad*/
 .datepicker{
     color: black;
-}
-
-/*El color con el que se muestra el peso del archivo en la carga masiva se imagenes*/
-.size{
-    color: black;
-}
-
-.calendar{
-    background: #fff;
 }
 
 #cuerpo{
@@ -78,7 +67,6 @@ body {
 }
 
 
-/* botoner�a panel principal */
 .metro{
     width:auto;
     height:auto;
@@ -199,7 +187,7 @@ body {
     }
 }
 
-/* FORMATO PARA TEXTO CUSTOM */
+
 .formato_texto_custom{
     width: 97%;
     float: left;
