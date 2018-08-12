@@ -26,28 +26,28 @@ if(!isset($_SESSION['userName'])){
                     </button>
                 </div>
                 <div class="collapse navbar-collapse navbar-menubuilder">
-                        <ul class="nav navbar-nav navbar-left">
+                        <ul class="nav navbar-nav navbar-left" id="nevatation-options">
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Employees<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" data-nav_accion="views/cliente.php" onclick="vista_crear_nuevo_salon_evento();"> New employee</a></li>
-                                    <li><a href="#" data-nav_accion="views/clientess.php" onclick="vista_crear_nuevo_coach();"> Modify employee</a></li>
+                                    <li><a href="#" data-nav_accion="NewEmployee.php"> New employee</a></li>
+                                    <li><a href="#" data-nav_accion="EditEmployee.php"> Modify employee</a></li>
                                 </ul>
                             </li>
 
 
                             <li>
-                                <a href="#" onclick="vista_calendario();"><span class="glyphicon glyphicon-tasks"></span> Management</a>
+                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-tasks"></span> Management</a>
                             </li>
 
                             <li>
-                                <a href="#" onclick="vista_calendario();"><span class="glyphicon glyphicon-wrench"></span> Change password</a>
+                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-wrench"></span> Change password</a>
                             </li>
                         </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
+                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> logout</a>
                         </li>
                     </ul>
 
@@ -55,26 +55,25 @@ if(!isset($_SESSION['userName'])){
             </div>
         </div>
     </div>
-    <div class="col-md-12" id="cuerpo"></div>
+
+    <div class="col-md-12" id="newViewBody"></div>
 
     <!--
     =================================================================================
-                            Errores en query de AJAX
+                           Modals for errors encountered by ajax
     =================================================================================
     -->
 
-    <!-- Fallo en la conexion de internet -->
     <div id="modal_error_internet" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Por favor revise su conexión a internet.</p>
+                    <p>Please verify your internet connection and try again.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -84,18 +83,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- El recurso solicitado no existe -->
     <div id="modal_error_404" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>El URL del formulario no pudo ser encontrado en el servidor.</p>
+                    <p>Unable to find the requested url in the sever.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -105,18 +102,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- Error interno del servidor donde no es posible detectar la causa especifica -->
     <div id="modal_error_500" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Error interno del servidor.</p>
+                    <p>The server has encountered an internal error, please try again later.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -126,18 +121,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- El servidor respone con un string que no esta en formato JSON o contiene caracteres adicionales al JSON -->
     <div id="modal_error_parsererror" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Fallo al procesar el JSON enviado por el servidor.</p>
+                    <p>The response from the sever wasn't a proper JSON format</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -147,18 +140,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- El servidortardo demasiado en responder -->
     <div id="modal_error_timeout" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>La petición excedió el limite de tiempo.</p>
+                    <p>The request timeout, please try again or verify your connection.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -168,18 +159,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- Si el request AJAX falla por alguna razon no listada -->
     <div id="modal_error_otro" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" id="modal_header_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Ha ocurrido un error desconocido.</p>
+                    <p>An unknown error occurred.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -191,22 +180,20 @@ if(!isset($_SESSION['userName'])){
 
     <!--
     =================================================================================
-                            Respuesta del servidor
+                            Generic response modals
     =================================================================================
     -->
 
-    <!-- Si el request AJAX falla por alguna razon no listada -->
-    <div id="modal_respuesa_servidor_error" class="modal fade" role="dialog">
+    <div id="modal_server_response_error" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_respuesa_servidor_error">
+                <div class="modal-header" id="modal_header_server_response_error">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>Ha ocurrido un error</center></h4>
+                    <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p id="respuesa_servidor_error"></p>
+                    <p id="server_response_error"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -216,18 +203,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <!-- Si el request AJAX recibe un success en la variable pasasa por el servidor -->
-    <div id="modal_respuesa_servidor_success" class="modal fade" role="dialog">
+    <div id="modal_server_response_success" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-            <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_respuesa_servidor_success">
+                <div class="modal-header" id="modal_header_server_response_success">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title"><center>El almacenado ha sido exitoso</center></h4>
+                    <h4 class="modal-title">Success</h4>
                 </div>
                 <div class="modal-body">
-                    <p id="respuesa_servidor_success"></p>
+                    <p id="server_response_success"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
