@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(isset($_SESSION['userName'])){
+    header("Location: ./landing.php");
+    exit();
+}
+?>
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 
@@ -41,4 +50,5 @@
 </div>
 
 <script src="../js/login.js"></script>
+<script src="../js/getBaseUrl.js"></script>
 <link href="../css/login.css" rel="stylesheet">

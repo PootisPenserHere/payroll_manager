@@ -18,7 +18,7 @@ body {
     padding: 20px;
     background: #fff;
     border-radius: 5px;
-    border-top: 5px solid #bdb035;
+    border-top: 5px solid #5bc0de;
     margin: 0 auto;
 }
 .login-block h1 {
@@ -58,15 +58,15 @@ body {
     background-size: 16px 80px;
 }
 .login-block input:active, .login-block input:focus {
-    border: 1px solid #bdb035;
+    border: 1px solid #5bc0de;
 }
 .login-block #loginButon {
     width: 100%;
     height: 40px;
-    background: #bdb035;
+    background: #009bad;
     box-sizing: border-box;
     border-radius: 5px;
-    border: 1px solid #6d661c;
+    border: 1px solid #000;
     color: #fff;
     font-weight: bold;
     text-transform: uppercase;
@@ -75,7 +75,7 @@ body {
     outline: none;
     cursor: pointer;
 }
-.login-block button:hover {
-    background: #c7b935;
-    border: 1px solid #6d661c;
+
+#modalLoginErrorHeader{
+    background-color: #d9534f;
 }

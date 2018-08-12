@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['userName'])){
+    header("Location: ./login.php");
+    exit();
+}
+?>
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 
@@ -38,7 +47,7 @@
                         </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../logout.php"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
+                            <a href="#" onclick="logout();"><span class="fa fa-fw fa-power-off"></span> Cerrar Sesión</a>
                         </li>
                     </ul>
 
@@ -229,4 +238,6 @@
     </div>
 </body>
 
-<link href="../css/panel.css" rel="stylesheet">
+<script src="../js/getBaseUrl.js"></script>
+<script src="../js/landing.js"></script>
+<link href="../css/landing.css" rel="stylesheet">

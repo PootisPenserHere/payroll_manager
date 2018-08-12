@@ -117,12 +117,12 @@ class SessionApplication{
     }
 
     /**
-     * @return string
+     * @return array
      */
     function destroySession(){
         session_destroy();
 
-        return "Sucessfully logged out.";
+        return array('status' => 'success', 'message' => 'Successfully logged out.');
     }
 }
 ?>
