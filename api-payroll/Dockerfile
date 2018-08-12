@@ -10,11 +10,22 @@ RUN composer install
 # Stage 2 - the production environment
 FROM ubuntu:16.04
 
-# Updating
 RUN apt-get -y update && apt-get -y upgrade
 
-# Installing php, apache and supplementary software
-RUN apt-get -y install apache2 php7.0 libapache2-mod-php7.0 php7.0-cli php7.0-common php7.0-mbstring php7.0-gd php7.0-intl php7.0-xml php7.0-mysql php7.0-mcrypt php7.0-zip curl git unzip composer
+RUN apt-get -y install apache2 \
+php7.0 \
+libapache2-mod-php7.0 \
+php7.0-cli \
+php7.0-common \
+php7.0-mbstring \
+php7.0-gd \
+php7.0-intl \
+php7.0-xml \
+php7.0-mysql \
+php7.0-mcrypt \
+php7.0-zip \
+curl \
+composer
 
 # Enable apache mods
 RUN a2enmod php7.0
@@ -37,8 +48,8 @@ COPY --from=build-deps /root .
 RUN touch logs/app.log
 RUN chmod 777 logs/app.log
 
-# Update the default apache site with the config we created.
+# Update the default apache site
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
-# By default start up apache in the foreground, override with /bin/bash for interative
+# By default start up apache in the foreground
 CMD /usr/sbin/apache2ctl -D FOREGROUND
