@@ -16,9 +16,9 @@ $(document).keypress(function(e) {
  * display errors to the user
  */
 function processLogin() {
-    var baseUrl = getbaseUrl();
+    let baseUrl = getbaseUrl();
 
-    var parameters = {
+    let parameters = {
         "userName":$('#userName').val(),
         "password":$('#password').val()
     };
