@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['userName'])){
+    header("Location: ./login.php");
+    exit();
+}
+?>
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 
