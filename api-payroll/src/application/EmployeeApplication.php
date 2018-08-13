@@ -234,6 +234,33 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $code string
+     * @return integer
+     */
+    function getIdEmployeeByCode($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    id
+                                                FROM
+                                                    employees
+                                                WHERE
+                                                    code = :code),
+                                            0) AS id;
+                                    ");
+
+        $stmt->execute(array(':code' => $code));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
+
+    /**
      * Gets the data associated with the employee
      *
      * @param $idEmployee
@@ -243,18 +270,23 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         $stmt = $this->pdo->prepare("SELECT 
+                                        e.id AS idEmployee,
                                         p.id AS idPerson,
                                         p.firstName,
                                         p.middleName,
                                         IFNULL(p.lastName, '') AS lastName,
+                                        p.birthDate,
                                         p.email,
                                         p.phone,
                                         e.code,
+                                        et.name AS employeeType,
                                         e.contractType
                                     FROM
                                         employees e
                                             INNER JOIN
                                         persons p ON p.id = e.idPerson
+                                            INNER JOIN
+                                        employeeType et ON et.id = e.idEmployeeType
                                     WHERE
                                         e.id = :idEmployee");
 
@@ -281,6 +313,7 @@ class EmployeeApplication{
         $employeeData = $this->getEmployeeDataById($idEmployee);
 
         $response = array(
+            "idEmployee" => (int)$employeeData['idEmployee'],
             "idPerson" => (int)$employeeData['idPerson'],
             "firstName" => $this->cryptographyService->decryptString($employeeData['firstName']),
             "middleName" => $this->cryptographyService->decryptString($employeeData['middleName']),
@@ -289,9 +322,11 @@ class EmployeeApplication{
                 ? $this->cryptographyService->decryptString($employeeData['lastName'])
                 : '',
 
+            "birthDate" => $employeeData['birthDate'],
             "email" => $this->cryptographyService->decryptString($employeeData['email']),
             "phone" => $employeeData['phone'],
             "code" => $employeeData['code'],
+            "employeeType" => $employeeData['employeeType'],
             "contractType" => $employeeData['contractType']
 
         );
@@ -306,7 +341,7 @@ class EmployeeApplication{
     function getEmployeeDataByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $idEmployee = $this->getIdEmployeeTypeByCode($code);
+        $idEmployee = $this->getIdEmployeeByCode($code);
 
         return $this->proxyGetEmployeeDataById($idEmployee);
     }
@@ -519,14 +554,10 @@ class EmployeeApplication{
             $currentEmployee = $this->proxyGetEmployeeDataById($row['id']);
 
             $result[] = array(
-                'idPerson' => $currentEmployee['idPerson'],
                 'fullName' => $currentEmployee['firstName']." ".
                     $currentEmployee['middleName']." ".
                     $currentEmployee['lastName'],
-                'email' => $currentEmployee['email'],
-                'phone' => $currentEmployee['phone'],
-                'code' => $currentEmployee['code'],
-                'contractType' => $currentEmployee['contractType']
+                'code' => $currentEmployee['code']
             );
         }
 

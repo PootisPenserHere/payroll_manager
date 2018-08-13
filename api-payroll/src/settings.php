@@ -45,6 +45,7 @@ return [
         // Employee settings
         'employee' => [
             'codeLength' => '3',
+            'contractTypes' => array('INTERNO', 'EXTERNO'),
         ],
     ],
 ];
