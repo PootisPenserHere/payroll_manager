@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="hidenEmployeeCode">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="editEmployeeCode">Code</label>
                             <div class="col-md-5">
@@ -102,7 +102,7 @@
                 </div>
                 <div class="row col-md-offset-6">
                     <div class="form-group">
-                        <a href="#" class="btn btn-lg btn-success " onclick="saveeditEmployee();">Create</a>
+                        <a href="#" class="btn btn-lg btn-success " onclick="updateEmployee();">Update</a>
                     </div>
                 </div>
             </div>

@@ -420,14 +420,11 @@ class EmployeeApplication{
      */
     function updateEmployeeData($requestData){
         // Getting and validating the data
-        $idEmployee = $requestData['idEmployee'];
-        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
-
-        $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
-        $this->asserts->higherThanZero($idPerson, "idPerson must be higher than 0");
-
         $code = $requestData['code'];
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
+        $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
 
         $firstName = $requestData['firstName'];
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");

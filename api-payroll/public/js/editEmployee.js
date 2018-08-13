@@ -6,6 +6,14 @@ $(document).ready(function(){
 
     loadEmployeeTypes();
 
+    $('.datepicker').datepicker({
+        format: "yyyy/mm/dd",
+        autoclose: true
+    });
+
+    // Not to be edited
+    $("#hidenEmployeeCode").hide();
+
     // Setting up bloodhound typeahead
     let employeesList = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
@@ -130,24 +138,25 @@ function updateEmployee(){
     let baseUrl = getbaseUrl();
 
     let parameters = {
-        "firstName":$('#newEmployeeFirstName').val(),
-        "middleName":$('#newEmployeeMiddleName').val(),
-        "lastName":$('#newEmployeeLastName').val(),
-        "birthDate":$('#newEmployeeBirthDate').val(),
-        "email":$('#newEmployeeEmail').val(),
-        "phone":$('#newEmployeePhone').val(),
-        "idEmployeeType":$('#newEmployeeType').val(),
-        "contractType":$('#NewEmpployyContractType').val()
+        "firstName":$('#editEmployeeFirstName').val(),
+        "middleName":$('#editEmployeeMiddleName').val(),
+        "lastName":$('#editEmployeeLastName').val(),
+        "birthDate":$('#editEmployeeBirthDate').val(),
+        "code":$('#editEmployeeCode').val(),
+        "email":$('#editEmployeeEmail').val(),
+        "phone":$('#editEmployeePhone').val(),
+        "idEmployeeType":$('#editEmployeeType').val(),
+        "contractType":$('#editEmployeeContractType').val()
     };
 
     $.ajax({
         url: baseUrl + '/api/employee',
-        type: 'POST',
+        type: 'PUT',
         dataType: 'json',
         data: parameters,
         success:function(data){
             $('#modalServerResponseSuccess').modal('show');
-            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['fullName'] + ' has been created with the code ' + data['employeeCode'];
+            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['fullName'] + ' has been updated.';
         },
         error:function(x,e) {
             let responseText = $.parseJSON(x["responseText"]);
