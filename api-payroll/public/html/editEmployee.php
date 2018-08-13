@@ -20,59 +20,68 @@
                 <div class="col-md-6">
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeFirstName">First name</label>
+                            <label class="col-md-4 control-label" for="editEmployeeFirstName">First name</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeFirstName" name="newEmployeeFirstName" type="text" class="form-control input-md">
+                                <input id="editEmployeeFirstName" name="editEmployeeFirstName" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeMiddleName">Middle name</label>
+                            <label class="col-md-4 control-label" for="editEmployeeMiddleName">Middle name</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeMiddleName" name="newEmployeeMiddleName" type="text" class="form-control input-md">
+                                <input id="editEmployeeMiddleName" name="editEmployeeMiddleName" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeLastName">Last name</label>
+                            <label class="col-md-4 control-label" for="editEmployeeLastName">Last name</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeLastName" name="newEmployeeLastName" type="text" class="form-control input-md">
+                                <input id="editEmployeeLastName" name="editEmployeeLastName" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeBirthDate">Birth date</label>
+                            <label class="col-md-4 control-label" for="editEmployeeBirthDate">Birth date</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeBirthDate" name="newEmployeeBirthDate" type="text" class="form-control input-md datepicker">
+                                <input id="editEmployeeBirthDate" name="editEmployeeBirthDate" type="text" class="form-control input-md datepicker">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="editEmployeeCode">Code</label>
+                            <div class="col-md-5">
+                                <input id="editEmployeeCode" name="editEmployeeCode" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeEmail">Email</label>
+                            <label class="col-md-4 control-label" for="editEmployeeEmail">Email</label>
                             <div class="col-md-5">
-                                <input id="newEmployeeEmail" name="newEmployeeEmail" type="text" class="form-control input-md">
+                                <input id="editEmployeeEmail" name="editEmployeeEmail" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeePhone">Phone</label>
+                            <label class="col-md-4 control-label" for="editEmployeePhone">Phone</label>
                             <div class="col-md-5">
-                                <input id="newEmployeePhone" name="newEmployeePhone" type="text" class="form-control input-md">
+                                <input id="editEmployeePhone" name="editEmployeePhone" type="text" class="form-control input-md">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="newEmployeeType">Rol</label>
+                            <label class="col-md-4 control-label" for="editEmployeeType">Rol</label>
                             <div class="col-md-5">
-                                <select class="form-control input-md" name="newEmployeeType" id="newEmployeeType">
+                                <select class="form-control input-md" name="editEmployeeType" id="editEmployeeType">
                                     <option>Employee type</option>
                                 </select>
                             </div>
@@ -80,9 +89,9 @@
                     </div>
                     <div class="row">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="NewEmpployyContractType">Contract type</label>
+                            <label class="col-md-4 control-label" for="editEmployeeContractType">Contract type</label>
                             <div class="col-md-5">
-                                <select class="form-control input-md" name="NewEmpployyContractType" id="NewEmpployyContractType">
+                                <select class="form-control input-md" name="editEmployeeContractType" id="editEmployeeContractType">
                                     <option>Contract type</option>
                                     <option value="INTERNO">interno</option>
                                     <option value="EXTERNO">Externo</option>
@@ -93,7 +102,7 @@
                 </div>
                 <div class="row col-md-offset-6">
                     <div class="form-group">
-                        <a href="#" class="btn btn-lg btn-success " onclick="saveNewEmployee();">Create</a>
+                        <a href="#" class="btn btn-lg btn-success " onclick="saveeditEmployee();">Create</a>
                     </div>
                 </div>
             </div>
