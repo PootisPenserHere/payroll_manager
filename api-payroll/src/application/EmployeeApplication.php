@@ -145,7 +145,11 @@ class EmployeeApplication{
         $this->asserts->betweenLength($phone, 10, 10, "The phone number must be 10 digits without special characters.");
 
         $idEmployeeType = $requestData{'idEmployeeType'};
+        $this->asserts->higherThanZero($idEmployeeType, 'idEmployeeType must be higher than zero.');
+
         $contractType = $requestData{'contractType'};
+        $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
+        $this->asserts->existInArray($contractType, $this->settings['contractTypes'], 'The contract type is not a valid one.');
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);
@@ -421,6 +425,7 @@ class EmployeeApplication{
 
         $contractType = $requestData{'contractType'};
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
+        $this->asserts->existInArray($contractType, $this->settings['contractTypes'], 'The contract type is not a valid one.');
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);

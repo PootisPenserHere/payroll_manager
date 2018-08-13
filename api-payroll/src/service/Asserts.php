@@ -69,5 +69,17 @@ class Asserts{
             throw new Exception($errorMessage);
         }
     }
+
+    /**
+     * @param $string string
+     * @param $array array
+     * @param $errorMessage string
+     * @throws Exception
+     */
+    function existInArray($string, $array, $errorMessage){
+        if(!in_array($string, $array)){
+            throw new Exception($errorMessage);
+        }
+    }
 }
 ?>
