@@ -536,7 +536,7 @@ class EmployeeApplication{
     /**
      * Takes an array of all active employees and filters them by a string, returning
      * all sub arrays that contain such string
-     * 
+     *
      * @param $partialName string
      * @return array
      */

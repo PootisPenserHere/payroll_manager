@@ -226,6 +226,7 @@ if(!isset($_SESSION['userName'])){
 <script src="../js/getBaseUrl.js"></script>
 <script src="../js/landing.js"></script>
 <script src="../js/bootstrap-datepicker.min.js"></script>
+<script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
 
 <link href="../css/bootstrap-datepicker.min.css" rel="stylesheet">
 <link href="../css/landing.css" rel="stylesheet">

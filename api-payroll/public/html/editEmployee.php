@@ -1,13 +1,22 @@
-<script src="../js/editEmployee.js"></script>
 <script src="../js/getBaseUrl.js"></script>
+<script src="../js/editEmployee.js"></script>
 
 <form class="form-horizontal" id="editEmployee">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">New employee</h3>
+                <h3 class="panel-title">Edit employee</h3>
             </div>
             <div class="panel-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="editEmploySearch">Employee</label>
+                        <div class="col-md-5">
+                            <input id="editEmploySearch" name="editEmploySearch" type="text" class="form-control input-md">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-6">
                     <div class="row">
                         <div class="form-group">
