@@ -31,8 +31,8 @@ if(!isset($_SESSION['userName'])){
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Employees<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" data-nav_accion="NewEmployee.php"> New employee</a></li>
-                                    <li><a href="#" data-nav_accion="EditEmployee.php"> Modify employee</a></li>
+                                    <li><a href="#" data-nav_accion="newEmployee.php"> New employee</a></li>
+                                    <li><a href="#" data-nav_accion="editEmployee.php"> Modify employee</a></li>
                                 </ul>
                             </li>
 
@@ -226,6 +226,7 @@ if(!isset($_SESSION['userName'])){
 <script src="../js/getBaseUrl.js"></script>
 <script src="../js/landing.js"></script>
 <script src="../js/bootstrap-datepicker.min.js"></script>
+<script src="../js/typeahead.bundle.js"></script>
 
 <link href="../css/bootstrap-datepicker.min.css" rel="stylesheet">
 <link href="../css/landing.css" rel="stylesheet">

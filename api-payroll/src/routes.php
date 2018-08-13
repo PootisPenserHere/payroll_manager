@@ -41,10 +41,12 @@ $app->get('/api/employee/types', function (Request $request, Response $response,
         ->write(json_encode($this->employeeApplication->listEmployeeTypes()));
 });
 
-$app->get('/api/employee/all', function (Request $request, Response $response, array $args) {
+$app->get('/api/employee/find/{partialName}', function (Request $request, Response $response, array $args) {
+    $partialName = $args['partialName'];
+
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($this->employeeApplication->listAllActiveEmployees()));
+        ->write(json_encode($this->employeeApplication->findEmployeeByFullName($partialName)));
 });
 
 $app->post('/api/employee', function ($request, $response) {

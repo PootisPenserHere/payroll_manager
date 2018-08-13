@@ -145,7 +145,11 @@ class EmployeeApplication{
         $this->asserts->betweenLength($phone, 10, 10, "The phone number must be 10 digits without special characters.");
 
         $idEmployeeType = $requestData{'idEmployeeType'};
+        $this->asserts->higherThanZero($idEmployeeType, 'idEmployeeType must be higher than zero.');
+
         $contractType = $requestData{'contractType'};
+        $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
+        $this->asserts->existInArray($contractType, $this->settings['contractTypes'], 'The contract type is not a valid one.');
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);
@@ -230,6 +234,33 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $code string
+     * @return integer
+     */
+    function getIdEmployeeByCode($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    id
+                                                FROM
+                                                    employees
+                                                WHERE
+                                                    code = :code),
+                                            0) AS id;
+                                    ");
+
+        $stmt->execute(array(':code' => $code));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            exit($this->databaseSelectQueryErrorMessage);
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
+
+    /**
      * Gets the data associated with the employee
      *
      * @param $idEmployee
@@ -239,13 +270,16 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         $stmt = $this->pdo->prepare("SELECT 
+                                        e.id AS idEmployee,
                                         p.id AS idPerson,
                                         p.firstName,
                                         p.middleName,
                                         IFNULL(p.lastName, '') AS lastName,
+                                        p.birthDate,
                                         p.email,
                                         p.phone,
                                         e.code,
+                                        e.idEmployeeType,
                                         e.contractType
                                     FROM
                                         employees e
@@ -277,6 +311,7 @@ class EmployeeApplication{
         $employeeData = $this->getEmployeeDataById($idEmployee);
 
         $response = array(
+            "idEmployee" => (int)$employeeData['idEmployee'],
             "idPerson" => (int)$employeeData['idPerson'],
             "firstName" => $this->cryptographyService->decryptString($employeeData['firstName']),
             "middleName" => $this->cryptographyService->decryptString($employeeData['middleName']),
@@ -285,9 +320,11 @@ class EmployeeApplication{
                 ? $this->cryptographyService->decryptString($employeeData['lastName'])
                 : '',
 
+            "birthDate" => $employeeData['birthDate'],
             "email" => $this->cryptographyService->decryptString($employeeData['email']),
             "phone" => $employeeData['phone'],
             "code" => $employeeData['code'],
+            "idEmployeeType" => $employeeData['idEmployeeType'],
             "contractType" => $employeeData['contractType']
 
         );
@@ -302,7 +339,7 @@ class EmployeeApplication{
     function getEmployeeDataByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $idEmployee = $this->getIdEmployeeTypeByCode($code);
+        $idEmployee = $this->getIdEmployeeByCode($code);
 
         return $this->proxyGetEmployeeDataById($idEmployee);
     }
@@ -383,14 +420,11 @@ class EmployeeApplication{
      */
     function updateEmployeeData($requestData){
         // Getting and validating the data
-        $idEmployee = $requestData['idEmployee'];
-        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
-
-        $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
-        $this->asserts->higherThanZero($idPerson, "idPerson must be higher than 0");
-
         $code = $requestData['code'];
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
+        $idPerson = $this->getIdPersonByIdEmployee($idEmployee);
 
         $firstName = $requestData['firstName'];
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
@@ -421,6 +455,7 @@ class EmployeeApplication{
 
         $contractType = $requestData{'contractType'};
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
+        $this->asserts->existInArray($contractType, $this->settings['contractTypes'], 'The contract type is not a valid one.');
 
         // Encrypting the sensitive data
         $securedFirstName = $this->cryptographyService->encryptString($firstName);
@@ -500,6 +535,9 @@ class EmployeeApplication{
     }
 
     /**
+     * Uses an already existing method to create and array containing the details of
+     * all currently active employees
+     *
      * @return array
      */
     function listAllActiveEmployees(){
@@ -508,10 +546,36 @@ class EmployeeApplication{
         $result = array();
 
         foreach($ids as $row){
-            $result[] = $this->proxyGetEmployeeDataById($row['id']);
+            $currentEmployee = $this->proxyGetEmployeeDataById($row['id']);
+
+            $result[] = array(
+                'fullName' => $currentEmployee['firstName']." ".
+                    $currentEmployee['middleName']." ".
+                    $currentEmployee['lastName'],
+                'code' => $currentEmployee['code']
+            );
         }
 
         return $result;
+    }
+
+    /**
+     * Takes an array of all active employees and filters them by a string, returning
+     * all sub arrays that contain such string
+     *
+     * @param $partialName string
+     * @return array
+     */
+    function findEmployeeByFullName($partialName){
+        $fullList = $this->listAllActiveEmployees();
+
+        $pattern = '/'.$partialName.'/';
+
+        $matches = array_filter($fullList, function($a) use($pattern)  {
+            return preg_grep($pattern, $a);
+        });
+
+        return $matches;
     }
 }
 ?>

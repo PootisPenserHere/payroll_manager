@@ -1,4 +1,4 @@
-<script src="../js/NewEmployee.js"></script>
+<script src="../js/newEmployee.js"></script>
 <script src="../js/getBaseUrl.js"></script>
 
 <form class="form-horizontal" id="newEmployeeForm">
