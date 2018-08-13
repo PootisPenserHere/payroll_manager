@@ -4,7 +4,8 @@
 $(document).ready(function(){
     let baseUrl = getbaseUrl();
 
-    let productos = new Bloodhound({
+    // Setting up bloodhound typeahead
+    let employeesList = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
@@ -23,8 +24,7 @@ $(document).ready(function(){
         }
     });
 
-    // Initialize the Bloodhound suggestion engine
-    productos.initialize();
+    employeesList.initialize();
 
     $("#editEmploySearch").typeahead({
             hint: true,
@@ -34,7 +34,7 @@ $(document).ready(function(){
         {
             name: "result",
             displayKey: "fullName",
-            source: productos.ttAdapter()
+            source: employeesList.ttAdapter()
         }).bind("typeahead:selected", function(obj, datum, name) {
         $(this).data("id", datum.code);
         console.log(datum.code);
