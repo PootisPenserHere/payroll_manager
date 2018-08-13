@@ -64,11 +64,11 @@ if(!isset($_SESSION['userName'])){
     =================================================================================
     -->
 
-    <div id="modal_error_internet" class="modal fade" role="dialog">
+    <div id="modalErrorInternetConnection" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -83,11 +83,11 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_404" class="modal fade" role="dialog">
+    <div id="modalError404" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -102,11 +102,11 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_500" class="modal fade" role="dialog">
+    <div id="modalError500" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -121,11 +121,11 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_parsererror" class="modal fade" role="dialog">
+    <div id="modalErrorParsererror" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -140,11 +140,11 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_timeout" class="modal fade" role="dialog">
+    <div id="modalErrorTimeout" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -159,11 +159,11 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_error_otro" class="modal fade" role="dialog">
+    <div id="modalErrorOther" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
@@ -184,16 +184,16 @@ if(!isset($_SESSION['userName'])){
     =================================================================================
     -->
 
-    <div id="modal_server_response_error" class="modal fade" role="dialog">
+    <div id="modalServerResponseError" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_server_response_error">
+                <div class="modal-header modalHeaderError">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">An error has occurred</h4>
                 </div>
                 <div class="modal-body">
-                    <p id="server_response_error"></p>
+                    <p id="modalResponseError"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -203,16 +203,16 @@ if(!isset($_SESSION['userName'])){
         </div>
     </div>
 
-    <div id="modal_server_response_success" class="modal fade" role="dialog">
+    <div id="modalServerResponseSuccess" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <div class="modal-header" id="modal_header_server_response_success">
+                <div class="modal-header modalHeaderSuccess" id="modalHeaderServerResponseSuccess">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Success</h4>
                 </div>
                 <div class="modal-body">
-                    <p id="server_response_success"></p>
+                    <p id="serverResponseSuccess"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -225,4 +225,7 @@ if(!isset($_SESSION['userName'])){
 
 <script src="../js/getBaseUrl.js"></script>
 <script src="../js/landing.js"></script>
+<script src="../js/bootstrap-datepicker.min.js"></script>
+
+<link href="../css/bootstrap-datepicker.min.css" rel="stylesheet">
 <link href="../css/landing.css" rel="stylesheet">

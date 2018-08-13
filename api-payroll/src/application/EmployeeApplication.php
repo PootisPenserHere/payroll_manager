@@ -138,6 +138,7 @@ class EmployeeApplication{
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->betweenLength($email, 1, 100, "The middle name must have a length between 1 and 100 characters.");
+        $this->asserts->isEmail($email, "The email isn't in a correct format");
 
         $phone = $requestData['phone'];
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
@@ -409,6 +410,7 @@ class EmployeeApplication{
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->betweenLength($email, 1, 100, "The middle name must have a length between 1 and 100 characters.");
+        $this->asserts->isEmail($email, "The email isn't in a correct format");
 
         $phone = $requestData['phone'];
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");

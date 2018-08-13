@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `persons` (
   `lastName` varbinary(500) comment 'The last name of the person',
   `birthDate` DATE NOT NULL DEFAULT '1900-01-01' comment 'Date of birth of the person',
   `email` varbinary(500) NOT NULL comment 'The email adress of the person',
-  `phone` INT(10) UNSIGNED NOT NULL comment 'The phone number of the person should be the mobile one but leaves room for home ones',
+  `phone` BIGINT(10) UNSIGNED NOT NULL comment 'The phone number of the person should be the mobile one but leaves room for home ones',
   `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',

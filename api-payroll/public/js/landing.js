@@ -14,15 +14,15 @@ function logout() {
         },
         error:function(x,e) {
             if (x.status==0) {
-                $('#modal_error_internet').modal('show');
+                $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
-                $('#modal_error_404').modal('show');
+                $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modal_error_500').modal('show');
+                $('#modalError500').modal('show');
             } else if(e=='parsererror') {
-                $('#modal_error_parsererror').modal('show');
+                $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
-                $('#modal_error_timeout').modal('show');
+                $('#modalErrorTimeout').modal('show');
             } else {
                 $('#modal_error_otro').modal('show');
             }
@@ -60,15 +60,15 @@ function loadView(requestedView){
         },
         error:function(x,e) {
             if (x.status==0) {
-                $('#modal_error_internet').modal('show');
+                $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
-                $('#modal_error_404').modal('show');
+                $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modal_error_500').modal('show');
+                $('#modalError500').modal('show');
             } else if(e=='parsererror') {
-                $('#modal_error_parsererror').modal('show');
+                $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
-                $('#modal_error_timeout').modal('show');
+                $('#modalErrorTimeout').modal('show');
             } else {
                 $('#modal_error_otro').modal('show');
             }

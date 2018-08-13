@@ -16,9 +16,9 @@ $(document).keypress(function(e) {
  * display errors to the user
  */
 function processLogin() {
-    var baseUrl = getbaseUrl();
+    let baseUrl = getbaseUrl();
 
-    var parameters = {
+    let parameters = {
         "userName":$('#userName').val(),
         "password":$('#password').val()
     };
@@ -29,7 +29,6 @@ function processLogin() {
         dataType: 'json',
         data: parameters,
         success:function(data){
-            console.log(JSON.stringify(data));
             if(data["status"] == "success"){
                 window.location.replace(baseUrl + '/html/landing.php');
 
