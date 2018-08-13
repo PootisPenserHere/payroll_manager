@@ -1,7 +1,7 @@
-<script src="../js/NewEmployee.js"></script>
+<script src="../js/editEmployee.js"></script>
 <script src="../js/getBaseUrl.js"></script>
 
-<form class="form-horizontal" id="newEmployeeForm">
+<form class="form-horizontal" id="editEmployee">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
