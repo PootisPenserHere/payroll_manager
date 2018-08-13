@@ -505,6 +505,9 @@ class EmployeeApplication{
     }
 
     /**
+     * Uses an already existing method to create and array containing the details of
+     * all currently active employees
+     *
      * @return array
      */
     function listAllActiveEmployees(){
@@ -513,10 +516,40 @@ class EmployeeApplication{
         $result = array();
 
         foreach($ids as $row){
-            $result[] = $this->proxyGetEmployeeDataById($row['id']);
+            $currentEmployee = $this->proxyGetEmployeeDataById($row['id']);
+
+            $result[] = array(
+                'idPerson' => $currentEmployee['idPerson'],
+                'fullName' => $currentEmployee['firstName']." ".
+                    $currentEmployee['middleName']." ".
+                    $currentEmployee['lastName'],
+                'email' => $currentEmployee['email'],
+                'phone' => $currentEmployee['phone'],
+                'code' => $currentEmployee['code'],
+                'contractType' => $currentEmployee['contractType']
+            );
         }
 
         return $result;
+    }
+
+    /**
+     * Takes an array of all active employees and filters them by a string, returning
+     * all sub arrays that contain such string
+     * 
+     * @param $partialName string
+     * @return array
+     */
+    function findEmployeeByFullName($partialName){
+        $fullList = $this->listAllActiveEmployees();
+
+        $pattern = '/'.$partialName.'/';
+
+        $matches = array_filter($fullList, function($a) use($pattern)  {
+            return preg_grep($pattern, $a);
+        });
+
+        return $matches;
     }
 }
 ?>
