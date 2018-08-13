@@ -279,14 +279,12 @@ class EmployeeApplication{
                                         p.email,
                                         p.phone,
                                         e.code,
-                                        et.name AS employeeType,
+                                        e.idEmployeeType,
                                         e.contractType
                                     FROM
                                         employees e
                                             INNER JOIN
                                         persons p ON p.id = e.idPerson
-                                            INNER JOIN
-                                        employeeType et ON et.id = e.idEmployeeType
                                     WHERE
                                         e.id = :idEmployee");
 
@@ -326,7 +324,7 @@ class EmployeeApplication{
             "email" => $this->cryptographyService->decryptString($employeeData['email']),
             "phone" => $employeeData['phone'],
             "code" => $employeeData['code'],
-            "employeeType" => $employeeData['employeeType'],
+            "idEmployeeType" => $employeeData['idEmployeeType'],
             "contractType" => $employeeData['contractType']
 
         );
