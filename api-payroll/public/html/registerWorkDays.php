@@ -23,13 +23,13 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="workDaysEmployeeName">Name</label>
                         <div class="col-md-5">
-                            <input id="workDaysEmployeeName" name="workDaysEmployeeName" type="text" class="form-control input-md">
+                            <input id="workDaysEmployeeName" name="workDaysEmployeeName" type="text" class="form-control input-md" disabled>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="workDaysEmployeeRol">Performed rol</label>
+                        <label class="col-md-4 control-label" for="workDaysEmployeeRol">Rol</label>
                         <div class="col-md-5">
                             <select class="form-control input-md" name="workDaysEmployeeRol" id="workDaysEmployeeRol" disabled>
                                 <option></option>

@@ -47,7 +47,8 @@ $(document).ready(function(){
             source: employeesList.ttAdapter()
         }).bind("typeahead:selected", function(obj, datum, name) {
         $(this).data("id", datum.code);
-        console.log(datum.code);
+
+        loadEmployeeDataForWorkDays(datum.code);
         $('#hidenEmployeeCodeForWorkDaysCode').val(datum.code); // For future reference
     });
 });
@@ -73,6 +74,48 @@ function loadEmployeeTypesForWorkDays(){
                     '<option value="' + v.id + '">'+ v.name + '</option>'
                 );
             });
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+}
+
+/**
+ * Searches the employee data by its employee code and loads it
+ * into the form to be edited and saved
+ *
+ * @param code string
+ */
+function loadEmployeeDataForWorkDays(code){
+    let baseUrl = getbaseUrl();
+
+    $.ajax({
+        url: baseUrl + '/api/employee/code/' + code,
+        type: 'GET',
+        dataType: 'json',
+        success:function(data){
+            let fullName = data['firstName'] + ' ' + data['middleName'] + ' ' + data['lastName'];
+
+            $('#workDaysEmployeeName').val(fullName);
+            $('#workDaysEmployeeRol').val(data['idEmployeeType']);
+            $('#workDaysEmployeePerformedRol').val(data['idEmployeeType']);
+            $('#workDaysEmployeeContractType').val(data['contractType']);
         },
         error:function(x,e) {
             let responseText = $.parseJSON(x["responseText"]);
