@@ -177,3 +177,43 @@ function validateEmployeeCanDoOtherRoles(code){
         },
     });
 }
+
+function saveNewWorkDay(){
+    let baseUrl = getbaseUrl();
+
+    let parameters = {
+        "code":$('#hidenEmployeeCodeForWorkDaysCode').val(),
+        "idEmployeeTypePerformed":$('#workDaysEmployeePerformedRol').val(),
+        "deliveries":$('#workDaysEmployeeDeliveries').val(),
+        "date":$('#workDaysEmployeeWorkedDay').val(),
+    };
+
+    $.ajax({
+        url: baseUrl + '/api/employee/workday',
+        type: 'POST',
+        dataType: 'json',
+        data: parameters,
+        success:function(data){
+            $('#modalServerResponseSuccess').modal('show');
+            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['fullName'] + ' has been updated.';
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+}

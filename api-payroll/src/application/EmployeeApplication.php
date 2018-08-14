@@ -577,5 +577,9 @@ class EmployeeApplication{
 
         return $matches;
     }
+
+    function SaveNewWorkDay($requestData){
+        return array('status' => 'success', 'message' => 'Saved...', 'data' => $requestData);
+    }
 }
 ?>
