@@ -47,7 +47,7 @@ return [
             'codeLength' => '3',
             'contractTypes' => array('INTERNO', 'EXTERNO'),
             'hoursPerWorkDay' => 8,
-            'paymentperHour' => 30,
+            'paymentPerHour' => 30,
             'bonusPerDelivery' => 5,
             'perHourBonusDriver' => 10,
             'perHourBonusLoader' => 5,

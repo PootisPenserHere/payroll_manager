@@ -195,7 +195,7 @@ function saveNewWorkDay(){
         data: parameters,
         success:function(data){
             $('#modalServerResponseSuccess').modal('show');
-            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['fullName'] + ' has been updated.';
+            document.getElementById('serverResponseSuccess').innerHTML = data['message'];
         },
         error:function(x,e) {
             let responseText = $.parseJSON(x["responseText"]);

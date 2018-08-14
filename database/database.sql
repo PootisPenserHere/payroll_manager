@@ -82,12 +82,10 @@ CREATE TABLE IF NOT EXISTS `paymentsPerEmployeePerDay` (
   `baseAmount` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Amount paid for the hours worked',
   `bonusTime` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Bonus paid for the hours worked',
   `deliveries` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Bonus for the number of deliveries',
-  `taxes` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Substracted amout for taxes',
-  `vouchers` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Amout given in vouchers',
   `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
   PRIMARY KEY  (`id`),
   FOREIGN KEY (idEmployee) REFERENCES employees(id),
-  UNIQUE (`idEmployee`, `date`)
+  UNIQUE (`idEmployee`, `date`, `status`)
 );
