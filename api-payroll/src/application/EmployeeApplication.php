@@ -21,6 +21,8 @@ class EmployeeApplication{
     }
 
     /**
+     * A list of the types of employee used in the system
+     *
      * @return array
      */
     function listEmployeeTypes(){
@@ -715,6 +717,165 @@ class EmployeeApplication{
         $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid, $bonusTime, $bonusDeliveries);
 
         return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
+    }
+
+    /**
+     * The number of days the employee has worked for a given year and month only
+     * taking into accout the active ones
+     *
+     * @param $idEmployee integer
+     * @param $year integer
+     * @param $month integer
+     * @return integer
+     * @throws Exception
+     */
+    function findNumberWorkedOfDaysByEmployeeAndDate($idEmployee, $year, $month){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+        $this->asserts->higherThanZero($year, "year must be higher than 0");
+        $this->asserts->higherThanZero($month, "month must be higher than 0");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    COUNT(*)
+                                                FROM
+                                                    paymentsPerEmployeePerDay
+                                                WHERE
+                                                    idEmployee = :idEmployee 
+                                                        AND YEAR(date) = :year
+                                                        AND MONTH(date) = :month
+                                                        AND status = 'ACTIVE'),
+                                            0) AS workedDays");
+
+        $stmt->execute(array(':idEmployee' => $idEmployee, ':year' => $year, ':month' => $month));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception('Unable to determine the amount of worked days.');
+        }
+        $stmt = null;
+
+        return $results[0]['workedDays'];
+    }
+
+    /**
+     * A list of the data contained from all the days the employee has worked
+     * for the given month and year
+     *
+     * @param $idEmployee integer
+     * @param $year integer
+     * @param $month integer
+     * @return array
+     * @throws Exception
+     */
+    function getDataWorkedDaysByEmployee($idEmployee, $year, $month){
+        $stmt = $this->pdo->prepare("SELECT 
+                                        baseAmount, bonusTime, deliveries
+                                    FROM
+                                        paymentsPerEmployeePerDay
+                                    WHERE
+                                        idEmployee = :idEmployee AND 
+                                            YEAR(date) = :year
+                                            AND MONTH(date) = :month
+                                            AND status = 'ACTIVE'");
+        $stmt->execute(array(':idEmployee' => $idEmployee, ':year' => $year, ':month' => $month));
+
+        $results = $stmt->fetchAll();
+
+        if(!$results){
+            throw new Exception("No data of the worked days could be found.");
+        }
+        $stmt = null;
+
+        return $results;
+    }
+
+    /**
+     * @param $idEmployee integer
+     * @return string
+     * @throws Exception
+     */
+    function getContractTypeByEmployee($idEmployee){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                        contractType
+                                    FROM
+                                        employees
+                                    WHERE
+                                        id = :idEmployee");
+
+        $stmt->execute(array(':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception("The employee wasn't found.");
+        }
+        $stmt = null;
+
+        return $results[0]['contractType'];
+    }
+
+    /**
+     * Gets all the worked days for an employee and determines how much they're
+     * getting paid
+     *
+     * Will only work for the current month
+     *
+     * @param $code string
+     * @return array
+     * @throws Exception
+     */
+    function calculateSalaryByCode($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $salary = array(
+            'raw' => 0,
+            'taxes' => 0,
+            'real' => 0,
+            'vouchers' => 0
+        );
+
+        // No worked days found
+        if($this->findNumberWorkedOfDaysByEmployeeAndDate($idEmployee, date('Y'), date('m')) <= 0){
+            return $salary;
+        }
+
+        $dataWorkedDays = $this->getDataWorkedDaysByEmployee($idEmployee, date('Y'), date('m'));
+
+        $monthlyPayment = 0;
+        foreach($dataWorkedDays as $row){
+            $monthlyPayment = $monthlyPayment + $row['baseAmount'] + $row['bonusTime'] + $row['deliveries'];
+        }
+
+        $salary['raw'] = $monthlyPayment;
+
+        if($monthlyPayment >= $this->settings['amountForExtraTaxes']){
+            $this->settings['taxesAddUp']
+                ? $taxes = $monthlyPayment * ($this->settings['baseIsr'] + $this->settings['extraIsr'])
+                : $taxes = ($monthlyPayment * $this->settings['baseIsr']) + (($monthlyPayment * $this->settings['baseIsr']) * $this->settings['extraIsr']);
+        }else{
+            $taxes = $monthlyPayment * $this->settings['baseIsr'];
+        }
+
+        $salary['taxes'] = $taxes;
+        $salary['real'] = $monthlyPayment - $taxes;
+
+        $contractType = $this->getContractTypeByEmployee($idEmployee);
+
+        if($contractType == 'INTERNO'){
+            $vouchers = $monthlyPayment * $this->settings['percentOfPaymentForVouchers'];
+        }elseif ($contractType == 'EXTERNO'){
+            $this->settings['vouchersForAllContractTypes']
+                ? $vouchers = $monthlyPayment * $this->settings['percentOfPaymentForVouchers']
+                : $vouchers = 0;
+        }
+
+        $salary['vouchers'] = $vouchers;
+
+        return $salary;
     }
 }
 ?>

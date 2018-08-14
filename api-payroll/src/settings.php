@@ -52,12 +52,12 @@ return [
             'perHourBonusDriver' => 10,
             'perHourBonusLoader' => 5,
             'perHourBonusAux' => 0,
-            'BaseIsr' => 9,
-            'extraIsr' => 3,
+            'baseIsr' => .09,
+            'extraIsr' => .03,
             'taxesAddUp' => true, // If true this will be total/(9 + 3) else they're subtracted separately
             'amountForExtraTaxes' => 16000,
             'vouchersForAllContractTypes' => false, // Outsourced personal won't get vouchers
-            'percentOfPaymentForVouchers' => 4,
+            'percentOfPaymentForVouchers' => .04,
         ],
     ],
 ];
