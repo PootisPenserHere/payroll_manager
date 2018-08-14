@@ -73,3 +73,19 @@ CREATE TABLE IF NOT EXISTS `employees` (
   PRIMARY KEY  (`id`),
   UNIQUE (`code`)
 );
+
+DROP TABLE IF EXISTS paymentsPerEmployeePerDay;
+CREATE TABLE IF NOT EXISTS `paymentsPerEmployeePerDay` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idEmployee` INT UNSIGNED NOT NULL comment 'The employee to who this payment will be made',
+  `date` DATE NOT NULL DEFAULT '1900-01-01' comment 'Date of the worked day',
+  `baseAmount` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Amount paid for the hours worked',
+  `bonusTime` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Bonus paid for the hours worked',
+  `deliveries` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Bonus for the number of deliveries',
+  `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
+  PRIMARY KEY  (`id`),
+  FOREIGN KEY (idEmployee) REFERENCES employees(id),
+  UNIQUE (`idEmployee`, `date`, `status`)
+);

@@ -81,5 +81,19 @@ class Asserts{
             throw new Exception($errorMessage);
         }
     }
+
+    /**
+     * Compares two dates to dertermine if they have the same month
+     *
+     * @param $firstDate date
+     * @param $secondDate date
+     * @param $errorMessage string
+     * @throws Exception
+     */
+    function datesHaveSameMonth($firstDate, $secondDate, $errorMessage){
+        if (date("m",strtotime($firstDate)) != date("m",strtotime($secondDate))){
+            throw new Exception($errorMessage);
+        }
+    }
 }
 ?>

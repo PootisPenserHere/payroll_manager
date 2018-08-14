@@ -1,6 +1,7 @@
 <?php
 namespace App\Application;
 
+use Exception;
 use phpDocumentor\Reflection\Types\Integer;
 
 class EmployeeApplication{
@@ -54,6 +55,7 @@ class EmployeeApplication{
      * @param $email string
      * @param $phone string
      * @return integer
+     * @throws Exception
      */
     function saveNewPerson($firstName, $middleName, $lastName, $birthDate, $email, $phone){
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
@@ -87,6 +89,7 @@ class EmployeeApplication{
      * @param $code string
      * @param $contractType string
      * @return mixed
+     * @throws Exception
      */
     function savePersonAsEmployee($idEmployeeType, $idPerson, $code, $contractType){
         $this->asserts->higherThanZero($idEmployeeType, "idEmployeeType must be higher than 0");
@@ -115,6 +118,7 @@ class EmployeeApplication{
     /**
      * @param $requestData object
      * @return array
+     * @throws Exception
      */
     function saveNewEmployee($requestData){
         // Getting and validating the data
@@ -576,6 +580,141 @@ class EmployeeApplication{
         });
 
         return $matches;
+    }
+
+    /**
+     * Helper to determine if the date has already been saved as a worked day for
+     * an employee, so long as it's currently active in the database
+     *
+     * @param $idEmployee integer
+     * @param $date date
+     * @return integer
+     * @throws Exception
+     */
+    function checkDateNotUsedWorkDayPerEmployee($idEmployee, $date){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $this->asserts->isNotEmpty($date, "The code can't be empty.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    COUNT(*)
+                                                FROM
+                                                    paymentsPerEmployeePerDay
+                                                WHERE
+                                                    date = :date AND idEmployee = :idEmployee
+                                                        AND status = 'ACTIVE'),
+                                            0) AS timesDateFound");
+
+        $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception('Unable to determine the usage of date for the worked days.');
+        }
+        $stmt = null;
+
+        return $results[0]['timesDateFound'];
+    }
+
+    /**
+     * Saves the new worked day for the employee
+     *
+     * @param $idEmployee integer
+     * @param $date date
+     * @param $baseAmount double
+     * @param $bonusTime double
+     * @param $deliveries double
+     * @return integer
+     * @throws Exception
+     */
+    function saveWorkedDay($idEmployee, $date, $baseAmount, $bonusTime, $deliveries){
+        $this->asserts->isNotEmpty($idEmployee, "The idEmployee can't be empty.");
+        $this->asserts->isNotEmpty($date, "The date can't be empty.");
+        $this->asserts->isNotEmpty($baseAmount, "The base payment per day can't be empty.");
+        $this->asserts->isNotEmpty($bonusTime, "The bonus per worked hours can't be empty.");
+        $this->asserts->isNotEmpty($deliveries, "The payment for deliveries can't be empty.");
+
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDay 
+                                          (idEmployee, date, baseAmount, bonusTime, deliveries) 
+                                          VALUES (:idEmployee, :date, :baseAmount, :bonusTime, :deliveries)");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idEmployee' => $idEmployee, ':date' => $date, ':baseAmount' => $baseAmount,
+                ':bonusTime' => $bonusTime, ':deliveries' => $deliveries));
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+
+            return $id;
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+            throw new Exception('There was an error while trying to save the worked day.');
+        }
+    }
+
+    /**
+     * Takes the data from the front end for the new worked day for a
+     * employee and saves it
+     *
+     * @param $requestData object
+     * @return array
+     * @throws Exception
+     */
+    function SaveNewWorkDay($requestData){
+        $code = $requestData['code'];
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $idEmployeeType = $this->getIdEmployeeTypeByCode($code);
+        $this->asserts->higherThanZero($idEmployeeType, "idEmployeeType must be higher than 0");
+
+        $idEmployeeTypePerformed = $requestData['idEmployeeTypePerformed'];
+        $this->asserts->isNotEmpty($idEmployeeTypePerformed, "The performed rol must be provided.");
+        $this->asserts->higherThanZero($idEmployeeTypePerformed, "idEmployeeTypePerformed must be higher than 0");
+
+        $deliveries = $requestData['deliveries'];
+        $this->asserts->isNotEmpty($deliveries, "The number of deliveries cannot be empty or 0.");
+
+        $date = $requestData['date'];
+        $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
+
+        if($this->checkDateNotUsedWorkDayPerEmployee($idEmployee, $date) > 0){
+            throw new Exception("This date has already been saved as a worked day.");
+        }
+
+        // The emplpoyee can't take that rol
+        if($idEmployeeType != 3 and $idEmployeeType != $idEmployeeTypePerformed){
+            throw new Exception("The performed rol can't be done by this type of employee.");
+        }
+
+        // If we're working on a different month
+        $this->asserts->datesHaveSameMonth($date, date('Y-m-d'), "Work days can only be registered within the same month.");
+
+        $baseAmountPaid = $this->settings['hoursPerWorkDay'] * $this->settings['paymentPerHour'];
+
+        // Getting setting data based on employee type that was performed
+        switch ($idEmployeeTypePerformed) {
+            case 1:
+                $perHourBonus = $this->settings['perHourBonusDriver'];
+                break;
+            case 2:
+                $perHourBonus = $this->settings['perHourBonusLoader'];
+                break;
+            case 3:
+                $perHourBonus = $this->settings['perHourBonusAux'];
+                break;
+        }
+
+        $bonusTime = $perHourBonus * $this->settings['hoursPerWorkDay'];
+        $bonusDeliveries = $deliveries * $this->settings['bonusPerDelivery'];
+
+        $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid, $bonusTime, $bonusDeliveries);
+
+        return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
     }
 }
 ?>

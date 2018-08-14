@@ -96,3 +96,11 @@ $app->get('/api/employee/code/{code}', function (Request $request, Response $res
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->employeeApplication->getEmployeeDataByCode($code)));
 });
+
+$app->post('/api/employee/workday', function ($request, $response) {
+    $requestData = $request->getParsedBody();
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->SaveNewWorkDay($requestData)));
+});
