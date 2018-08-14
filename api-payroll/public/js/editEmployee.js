@@ -52,7 +52,7 @@ $(document).ready(function(){
 });
 
 /**
- * Loads the the enmployee types into their select option
+ * Loads the the employee types into their select option
  */
 function loadEmployeeTypes(){
     let baseUrl = getbaseUrl();
