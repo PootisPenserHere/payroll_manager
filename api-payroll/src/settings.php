@@ -46,6 +46,18 @@ return [
         'employee' => [
             'codeLength' => '3',
             'contractTypes' => array('INTERNO', 'EXTERNO'),
+            'hoursPerWorkDay' => 8,
+            'paymentperHour' => 30,
+            'bonusPerDelivery' => 5,
+            'perHourBonusDriver' => 10,
+            'perHourBonusLoader' => 5,
+            'perHourBonusAux' => 0,
+            'BaseIsr' => 9,
+            'extraIsr' => 3,
+            'taxesAddUp' => true, // If true this will be total/(9 + 3) else they're subtracted separately
+            'amountForExtraTaxes' => 16000,
+            'vouchersForAllContractTypes' => false, // Outsourced personal won't get vouchers
+            'percentOfPaymentForVouchers' => 4,
         ],
     ],
 ];
