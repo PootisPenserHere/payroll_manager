@@ -38,7 +38,7 @@ if(!isset($_SESSION['userName'])){
 
 
                             <li>
-                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-tasks"></span> Management</a>
+                                <a href="#" data-nav_accion="registerWorkDays.php" ><span class="glyphicon glyphicon-tasks"></span> Management</a>
                             </li>
 
                             <li>
