@@ -583,6 +583,43 @@ class EmployeeApplication{
     }
 
     /**
+     * Helper to determine if the date has already been saved as a worked day for
+     * an employee, so long as it's currently active in the database
+     *
+     * @param $idEmployee integer
+     * @param $date date
+     * @return integer
+     * @throws Exception
+     */
+    function checkDateNotUsedWorkDayPerEmployee($idEmployee, $date){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $this->asserts->isNotEmpty($date, "The code can't be empty.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    COUNT(*)
+                                                FROM
+                                                    paymentsPerEmployeePerDay
+                                                WHERE
+                                                    date = :date AND idEmployee = :idEmployee
+                                                        AND status = 'ACTIVE'),
+                                            0) AS timesDateFound");
+
+        $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception('Unable to determine the usage of date for the worked days.');
+        }
+        $stmt = null;
+
+        return $results[0]['timesDateFound'];
+    }
+
+    /**
+     * Saves the new worked day for the employee
+     *
      * @param $idEmployee integer
      * @param $date date
      * @param $baseAmount double
@@ -640,10 +677,14 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployeeTypePerformed, "idEmployeeTypePerformed must be higher than 0");
 
         $deliveries = $requestData['deliveries'];
-        $this->asserts->isNotEmpty($deliveries, "The number of deliveries cannot be empty.");
+        $this->asserts->isNotEmpty($deliveries, "The number of deliveries cannot be empty or 0.");
 
         $date = $requestData['date'];
-        $this->asserts->isNotEmpty($date, "The worked date cannot be empty-.");
+        $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
+
+        if($this->checkDateNotUsedWorkDayPerEmployee($idEmployee, $date) > 0){
+            throw new Exception("This date has already been saved as a worked day.");
+        }
 
         // The emplpoyee can't take that rol
         if($idEmployeeType != 3 and $idEmployeeType != $idEmployeeTypePerformed){
