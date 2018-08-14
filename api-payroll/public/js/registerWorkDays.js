@@ -49,6 +49,7 @@ $(document).ready(function(){
         $(this).data("id", datum.code);
 
         loadEmployeeDataForWorkDays(datum.code);
+        validateEmployeeCanDoOtherRoles(datum.code);
         $('#hidenEmployeeCodeForWorkDaysCode').val(datum.code); // For future reference
     });
 });
@@ -116,6 +117,45 @@ function loadEmployeeDataForWorkDays(code){
             $('#workDaysEmployeeRol').val(data['idEmployeeType']);
             $('#workDaysEmployeePerformedRol').val(data['idEmployeeType']);
             $('#workDaysEmployeeContractType').val(data['contractType']);
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+}
+
+/**
+ * Based on the employee code determines their type to decide if
+ * they should be able to cover for other roles or not
+ *
+ * @param code string
+ */
+function validateEmployeeCanDoOtherRoles(code){
+    let baseUrl = getbaseUrl();
+
+    $.ajax({
+        url: baseUrl + '/api/employee/type/' + code,
+        type: 'GET',
+        dataType: 'json',
+        success:function(data){
+            if(data == 3){
+                $("#workDaysEmployeePerformedRol").prop('disabled', false);
+            }
         },
         error:function(x,e) {
             let responseText = $.parseJSON(x["responseText"]);
