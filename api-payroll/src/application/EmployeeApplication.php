@@ -26,7 +26,7 @@ class EmployeeApplication{
      * @return array
      */
     function listEmployeeTypes(){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         id, name
                                     FROM
                                         employeeType
@@ -67,7 +67,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO persons (firstName, middleName, lastName, birthDate, email, phone) 
+            $stmt = $this->pdo->prepare("INSERT INTO persons (firstName, middleName, lastName, birthDate, email, phone)
                                           VALUES (:firstName, :middleName, :lastName, :birthDate, :email, :phone)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':firstName' => $firstName, ':middleName' => $middleName, ':lastName' => $lastName,
@@ -99,7 +99,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType) 
+            $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType)
                                           VALUES (:idEmployeeType, :idPerson, :code, :contractType)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':idEmployeeType' => $idEmployeeType, ':idPerson' => $idPerson, ':code' => $code,
@@ -194,8 +194,8 @@ class EmployeeApplication{
     function getIdPersonByIdEmployee($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                        COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                        COALESCE((SELECT
                                                         idPerson
                                                     FROM
                                                         employees
@@ -220,7 +220,7 @@ class EmployeeApplication{
     function getIdEmployeeTypeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT
                                         et.id
                                     FROM
                                         employees e
@@ -246,8 +246,8 @@ class EmployeeApplication{
     function getIdEmployeeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     id
                                                 FROM
                                                     employees
@@ -275,7 +275,7 @@ class EmployeeApplication{
     function getEmployeeDataById($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         e.id AS idEmployee,
                                         p.id AS idPerson,
                                         p.firstName,
@@ -368,8 +368,8 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE persons 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE persons
+                                        SET
                                             firstName = :firstName,
                                             middleName = :middleName,
                                             lastName = :lastName,
@@ -402,8 +402,8 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE employees 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE employees
+                                        SET
                                             idEmployeeType = :idEmployeeType,
                                             code = :code,
                                             contractType = :contractType
@@ -498,8 +498,8 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE employees 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE employees
+                                        SET
                                             status = 'INACTIVE'
                                         WHERE
                                             id = :idEmployee");
@@ -522,7 +522,7 @@ class EmployeeApplication{
      * @return array
      */
     function getIdEmployeeFromAllActiveEmployees(){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         id
                                     FROM
                                         employees
@@ -599,8 +599,8 @@ class EmployeeApplication{
 
         $this->asserts->isNotEmpty($date, "The code can't be empty.");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     COUNT(*)
                                                 FROM
                                                     paymentsPerEmployeePerDay
@@ -638,8 +638,8 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($deliveries, "The payment for deliveries can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDay 
-                                          (idEmployee, date, baseAmount, bonusTime, deliveries) 
+            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDay
+                                          (idEmployee, date, baseAmount, bonusTime, deliveries)
                                           VALUES (:idEmployee, :date, :baseAmount, :bonusTime, :deliveries)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':idEmployee' => $idEmployee, ':date' => $date, ':baseAmount' => $baseAmount,
@@ -735,13 +735,13 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($year, "year must be higher than 0");
         $this->asserts->higherThanZero($month, "month must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     COUNT(*)
                                                 FROM
                                                     paymentsPerEmployeePerDay
                                                 WHERE
-                                                    idEmployee = :idEmployee 
+                                                    idEmployee = :idEmployee
                                                         AND YEAR(date) = :year
                                                         AND MONTH(date) = :month
                                                         AND status = 'ACTIVE'),
@@ -768,12 +768,12 @@ class EmployeeApplication{
      * @throws Exception
      */
     function getDataWorkedDaysByEmployee($idEmployee, $year, $month){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         baseAmount, bonusTime, deliveries
                                     FROM
                                         paymentsPerEmployeePerDay
                                     WHERE
-                                        idEmployee = :idEmployee AND 
+                                        idEmployee = :idEmployee AND
                                             YEAR(date) = :year
                                             AND MONTH(date) = :month
                                             AND status = 'ACTIVE'");
@@ -798,7 +798,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         contractType
                                     FROM
                                         employees
@@ -813,6 +813,10 @@ class EmployeeApplication{
         $stmt = null;
 
         return $results[0]['contractType'];
+    }
+
+    function getDataWorkDayByDateAndCode($date, $code){
+      return array('status' => 'success', 'message' => 'Successfully did the thing.');
     }
 
     /**
