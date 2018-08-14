@@ -79,7 +79,39 @@
             </div>
 
             <div id="registerWorkDaysEmployeeSalary" class="col-md-6">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="workDaysEmployeeSalaryRaw">Raw</label>
+                        <div class="col-md-5">
+                            <input id="workDaysEmployeeSalaryRaw" name="workDaysEmployeeSalaryRaw" type="text" class="form-control input-md" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="workDaysEmployeeSalaryTaxes">Taxes</label>
+                        <div class="col-md-5">
+                            <input id="workDaysEmployeeSalaryTaxes" name="workDaysEmployeeSalaryTaxes" type="text" class="form-control input-md" disabled>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="workDaysEmployeeSalaryFinal">Final</label>
+                        <div class="col-md-5">
+                            <input id="workDaysEmployeeSalaryFinal" name="workDaysEmployeeSalaryFinal" type="text" class="form-control input-md" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="workDaysEmployeeSalaryVouchers">Vouchers</label>
+                        <div class="col-md-5">
+                            <input id="workDaysEmployeeSalaryVouchers" name="workDaysEmployeeSalaryVouchers" type="text" class="form-control input-md" disabled>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
