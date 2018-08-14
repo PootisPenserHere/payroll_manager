@@ -714,7 +714,14 @@ class EmployeeApplication{
         $bonusTime = $perHourBonus * $this->settings['hoursPerWorkDay'];
         $bonusDeliveries = $deliveries * $this->settings['bonusPerDelivery'];
 
-        $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid, $bonusTime, $bonusDeliveries);
+        $idPaymentPerEmployeePerDay = $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid,
+            $bonusTime, $bonusDeliveries);
+
+        $contractType = $this->getContractTypeByEmployee($idEmployee);
+
+        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $idEmployeeType, $idEmployeeTypePerformed,
+            $contractType, $this->settings['hoursPerWorkDay'], $this->settings['paymentPerHour'],
+            $perHourBonus, $deliveries, $this->settings['bonusPerDelivery']);
 
         return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
     }
@@ -813,6 +820,64 @@ class EmployeeApplication{
         $stmt = null;
 
         return $results[0]['contractType'];
+    }
+
+    /**
+     * Creates a backup of the information used to calculate the amount that the employee
+     * will be paid for the submitted day
+     *
+     * @param $idPaymentPerEmployeePerDay integer
+     * @param $idEmployeeType integer
+     * @param $idEmployeeTypePerformed integer
+     * @param $contractType string
+     * @param $hoursWorked double
+     * @param $paymentPerHour double
+     * @param $bonusPerHour double
+     * @param $deliveries integer
+     * @param $paymentPerDelivery double
+     * @return integer
+     * @throws Exception
+     */
+    function storeWorkDayDetails($idPaymentPerEmployeePerDay, $idEmployeeType, $idEmployeeTypePerformed, $contractType, $hoursWorked,
+                                 $paymentPerHour, $bonusPerHour, $deliveries, $paymentPerDelivery){
+        $this->asserts->isNotEmpty($idPaymentPerEmployeePerDay, "The idPaymentPerEmployeePerDay can't be empty.");
+        $this->asserts->isNotEmpty($idEmployeeType, "The idEmployeeType can't be empty.");
+        $this->asserts->isNotEmpty($idEmployeeTypePerformed, "The idEmployeeTypePerformed can't be empty.");
+        $this->asserts->isNotEmpty($contractType, "The contractType can't be empty.");
+        $this->asserts->isNotEmpty($hoursWorked, "The hoursWorked can't be empty.");
+        $this->asserts->isNotEmpty($paymentPerHour, "The paymentPerHour can't be empty.");
+        $this->asserts->isNotEmpty($bonusPerHour, "The bonusPerHour can't be empty.");
+        $this->asserts->isNotEmpty($deliveries, "The deliveries can't be empty.");
+        $this->asserts->isNotEmpty($paymentPerDelivery, "The paymentPerDelivery can't be empty.");
+
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDayDetail
+                                            (idPaymentPerEmployeePerDay, idEmployeeType, idEmployeeTypePerformed,
+                                            contractType, hoursWorked, paymentPerHour, bonusPerHour, deliveries, paymentPerDelivery)
+                                        VALUES
+                                            (:idPaymentPerEmployeePerDay, :idEmployeeType, :idEmployeeTypePerformed,
+                                            :contractType, :hoursWorked, :paymentPerHour, :bonusPerHour, :deliveries, :paymentPerDelivery)");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idPaymentPerEmployeePerDay' => $idPaymentPerEmployeePerDay,
+                ':idEmployeeType' => $idEmployeeType,
+                ':idEmployeeTypePerformed' => $idEmployeeTypePerformed,
+                ':contractType' => $contractType,
+                ':hoursWorked' => $hoursWorked,
+                ':paymentPerHour' => $paymentPerHour,
+                ':bonusPerHour' => $bonusPerHour,
+                ':deliveries' => $deliveries,
+                ':paymentPerDelivery' => $paymentPerDelivery)
+            );
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+
+            return $id;
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+            throw new Exception("An error occured while saving the work day details.");
+        }
     }
 
     function getDataWorkDayByDateAndCode($date, $code){
