@@ -880,8 +880,46 @@ class EmployeeApplication{
         }
     }
 
+    /**
+     * @param $date date
+     * @param $code string
+     * @return array
+     * @throws Exception
+     */
     function getDataWorkDayByDateAndCode($date, $code){
-      return array('status' => 'success', 'message' => 'Successfully did the thing.');
+        $idEmployee = $this->getIdEmployeeByCode($code);
+
+        $stmt = $this->pdo->prepare("SELECT
+                                        b.idPaymentPerEmployeePerDay,
+                                        b.idEmployeeType,
+                                        b.idEmployeeTypePerformed,
+                                        b.contractType,
+                                        b.hoursWorked,
+                                        b.paymentPerHour,
+                                        b.bonusPerHour,
+                                        b.deliveries,
+                                        b.paymentPerDelivery
+                                    FROM
+                                        paymentsPerEmployeePerDay a
+                                            INNER JOIN
+                                        paymentsPerEmployeePerDayDetail b ON b.idPaymentPerEmployeePerDay = a.id
+                                    WHERE
+                                        a.idEmployee = :idEmployee
+                                            AND a.date = :date
+                                            AND a.status = 'ACTIVE'
+                                            AND b.status = 'ACTIVE'
+                                    ORDER BY b.id DESC
+                                    LIMIT 1");
+        $stmt->execute(array(':idEmployee' => $idEmployee, ':date' => $date));
+
+        $results = $stmt->fetchAll();
+
+        if(!$results){
+            throw new Exception("No data of the work day was found..");
+        }
+        $stmt = null;
+
+        return $results;
     }
 
     /**
