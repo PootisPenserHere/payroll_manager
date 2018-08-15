@@ -62,6 +62,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
         $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
@@ -139,6 +140,7 @@ class EmployeeApplication{
 
         $birthDate = $requestData['birthDate'];
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
 
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
@@ -345,6 +347,7 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return array
+     * @throws Exception
      */
     function getEmployeeDataByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
@@ -368,6 +371,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
         $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
@@ -450,6 +454,7 @@ class EmployeeApplication{
 
         $birthDate = $requestData['birthDate'];
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
 
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
@@ -605,6 +610,7 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         $this->asserts->isNotEmpty($date, "The code can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
 
         $stmt = $this->pdo->prepare("SELECT
                                     COALESCE((SELECT
@@ -640,6 +646,7 @@ class EmployeeApplication{
     function saveWorkedDay($idEmployee, $date, $baseAmount, $bonusTime, $deliveries){
         $this->asserts->isNotEmpty($idEmployee, "The idEmployee can't be empty.");
         $this->asserts->isNotEmpty($date, "The date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
         $this->asserts->isNotEmpty($baseAmount, "The base payment per day can't be empty.");
         $this->asserts->isNotEmpty($bonusTime, "The bonus per worked hours can't be empty.");
         $this->asserts->isNotEmpty($deliveries, "The payment for deliveries can't be empty.");
@@ -690,6 +697,7 @@ class EmployeeApplication{
 
         $date = $requestData['date'];
         $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
 
         if($this->checkDateNotUsedWorkDayPerEmployee($idEmployee, $date) > 0){
             throw new Exception("This date has already been saved as a worked day.");
@@ -895,6 +903,7 @@ class EmployeeApplication{
      */
     function getDataWorkDayByDateAndCode($date, $code){
         $idEmployee = $this->getIdEmployeeByCode($code);
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
 
         $stmt = $this->pdo->prepare("SELECT
                                         b.idPaymentPerEmployeePerDay,
