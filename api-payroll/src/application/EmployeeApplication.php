@@ -431,6 +431,7 @@ class EmployeeApplication{
     /**
      * @param $requestData object
      * @return array
+     * @throws Exception
      */
     function updateEmployeeData($requestData){
         // Getting and validating the data
@@ -597,6 +598,39 @@ class EmployeeApplication{
     }
 
     /**
+     * @param $idEmployee integer
+     * @param $date date
+     * @return integer
+     * @throws Exception
+     */
+    function findIdPaymentPerDayByEmployeeAndDate($idEmployee, $date){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $this->asserts->isNotEmpty($date, "The code can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    id
+                                                FROM
+                                                    paymentsPerEmployeePerDay
+                                                WHERE
+                                                    date = :date AND idEmployee = :idEmployee),
+                                            0) AS id;
+                                    ");
+
+        $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception("The registry of the worked day could not be found.");
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
+    }
+
+    /**
      * Helper to determine if the date has already been saved as a worked day for
      * an employee, so long as it's currently active in the database
      *
@@ -625,7 +659,7 @@ class EmployeeApplication{
         $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            throw new Exception('Unable to determine the usage of date for the worked days.');
+            throw new Exception('Unable to find the date of the worked days.');
         }
         $stmt = null;
 
@@ -671,6 +705,66 @@ class EmployeeApplication{
     }
 
     /**
+     * Changes the status in the detail table for the registry of worked days so
+     * that it behaves as if deleted
+     * @param $idEmployee
+     * @param $date
+     */
+    function dissablePaymentPerDayDetailsByEmployeeAndDate($idEmployee, $date){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+        $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
+
+        try {
+            $stmt = $this->pdo->prepare("UPDATE paymentsPerEmployeePerDayDetail a
+                                                INNER JOIN
+                                            paymentsPerEmployeePerDay b ON b.id = a.idPaymentPerEmployeePerDay 
+                                        SET 
+                                            a.status = 'INACTIVE'
+                                        WHERE
+                                            b.date = :date AND b.idEmployee = :idEmployee");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
+     * @param $id integer - references paymentsPerEmployeePerDay
+     * @param $baseAmount double
+     * @param $bonusTime double
+     * @param $deliveries double
+     */
+    function updateWorkedDayPayments($id, $baseAmount, $bonusTime, $deliveries){
+        $this->asserts->higherThanZero($id, "id payment must be higher than 0");
+        $this->asserts->higherThanZero($baseAmount, "baseAmount must be higher than 0");
+        $this->asserts->higherThanZero($bonusTime, "bonusTime must be higher than 0");
+        $this->asserts->higherThanZero($deliveries, "deliveries must be higher than 0");
+
+        try {
+            $stmt = $this->pdo->prepare("UPDATE paymentsPerEmployeePerDay 
+                                        SET 
+                                            baseAmount = :baseAmount,
+                                            bonusTime = :bonusTime,
+                                            deliveries = :deliveries
+                                        WHERE
+                                            id = :id");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':baseAmount' => $baseAmount, ':bonusTime' => $bonusTime, ':deliveries' => $deliveries,
+                                ':id' => $id));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
      * Takes the data from the front end for the work day, this coulld be
      * for an update or a creation of a new registry
      *
@@ -701,10 +795,6 @@ class EmployeeApplication{
         $date = $requestData['date'];
         $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
         $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
-
-        if($this->checkDateNotUsedWorkDayPerEmployee($idEmployee, $date) > 0){
-            throw new Exception("This date has already been saved as a worked day.");
-        }
 
         // The emplpoyee can't take that rol
         if($idEmployeeType != 3 and $idEmployeeType != $idEmployeeTypePerformed){
@@ -755,13 +845,17 @@ class EmployeeApplication{
 
     /**
      * Wrapper function to store a new day that has been worked by an employee
-     * 
+     *
      * @param $requestData object
      * @return array
      * @throws Exception
      */
     function newWorkedDay($requestData){
         $data = $this->validateDataForStorageWorkDay($requestData);
+
+        if($this->checkDateNotUsedWorkDayPerEmployee($data['idEmployee'], $data['date']) > 0){
+            throw new Exception("This date has already been saved as a worked day.");
+        }
 
         $idPaymentPerEmployeePerDay = $this->saveWorkedDay($data['idEmployee'], $data['date'],
             $data['baseAmountPaid'], $data['bonusTime'], $data['bonusDeliveries']);
@@ -771,6 +865,29 @@ class EmployeeApplication{
             $data['paymentPerHour'], $data['perHourBonus'], $data['deliveries'], $data['bonusPerDelivery']);
 
         return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
+    }
+
+    /**
+     * Wrapper method to update a worked day for an employee
+     *
+     * @param $requestData object
+     * @return array
+     * @throws Exception
+     */
+    function updateWorkDay($requestData){
+        $data = $this->validateDataForStorageWorkDay($requestData);
+
+        $this->dissablePaymentPerDayDetailsByEmployeeAndDate($data['idEmployee'], $data['date']);
+
+        $idPaymentPerEmployeePerDay = $this->findIdPaymentPerDayByEmployeeAndDate($data['idEmployee'], $data['date']);
+
+        $this->updateWorkedDayPayments($idPaymentPerEmployeePerDay, $data['baseAmountPaid'], $data['bonusTime'], $data['bonusDeliveries']);
+
+        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $data['idEmployeeType'],
+            $data['idEmployeeTypePerformed'], $data['contractType'], $data['hoursPerWorkDay'],
+            $data['paymentPerHour'], $data['perHourBonus'], $data['deliveries'], $data['bonusPerDelivery']);
+
+        return array('status' => 'success', 'message' => 'The worked day has been updated.', 'data' => $requestData);
     }
 
     /**

@@ -105,6 +105,14 @@ $app->post('/api/employee/workday', function ($request, $response) {
         ->write(json_encode($this->employeeApplication->newWorkedDay($requestData)));
 });
 
+$app->put('/api/employee/workday', function ($request, $response) {
+    $requestData = $request->getParsedBody();
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->updateWorkDay($requestData)));
+});
+
 $app->get('/api/employee/salary/{code}', function (Request $request, Response $response, array $args) {
     $code = $args['code'];
 
