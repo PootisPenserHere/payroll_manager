@@ -504,7 +504,14 @@ class EmployeeApplication{
         return $response;
     }
 
-    function disableEmployeeRecord($idEmployee){
+    /**
+     * @param $code string
+     * @throws Exception
+     */
+    function disableEmployeeRecord($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         try {
