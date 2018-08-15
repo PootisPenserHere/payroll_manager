@@ -671,14 +671,17 @@ class EmployeeApplication{
     }
 
     /**
-     * Takes the data from the front end for the new worked day for a
-     * employee and saves it
+     * Takes the data from the front end for the work day, this coulld be
+     * for an update or a creation of a new registry
+     *
+     * The function will take the request body, validate it and pass the
+     * processed data back to the wrapper method
      *
      * @param $requestData object
      * @return array
      * @throws Exception
      */
-    function SaveNewWorkDay($requestData){
+    function validateDataForStorageWorkDay($requestData){
         $code = $requestData['code'];
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
@@ -729,14 +732,43 @@ class EmployeeApplication{
         $bonusTime = $perHourBonus * $this->settings['hoursPerWorkDay'];
         $bonusDeliveries = $deliveries * $this->settings['bonusPerDelivery'];
 
-        $idPaymentPerEmployeePerDay = $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid,
-            $bonusTime, $bonusDeliveries);
-
         $contractType = $this->getContractTypeByEmployee($idEmployee);
 
-        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $idEmployeeType, $idEmployeeTypePerformed,
-            $contractType, $this->settings['hoursPerWorkDay'], $this->settings['paymentPerHour'],
-            $perHourBonus, $deliveries, $this->settings['bonusPerDelivery']);
+        $result = array(
+            'idEmployee' => (int)$idEmployee,
+            'date' => $date,
+            'baseAmountPaid' => $baseAmountPaid,
+            'bonusTime' => $bonusTime,
+            'bonusDeliveries' => $bonusDeliveries,
+            'contractType' => $contractType,
+            'idEmployeeType' => (int)$idEmployeeType,
+            'idEmployeeTypePerformed' => (int)$idEmployeeTypePerformed,
+            'hoursPerWorkDay' => $this->settings['hoursPerWorkDay'],
+            'paymentPerHour' => $this->settings['paymentPerHour'],
+            'perHourBonus' => $perHourBonus,
+            'deliveries' => $deliveries,
+            'bonusPerDelivery' => $this->settings['bonusPerDelivery']
+        );
+
+        return $result;
+    }
+
+    /**
+     * Wrapper function to store a new day that has been worked by an employee
+     * 
+     * @param $requestData object
+     * @return array
+     * @throws Exception
+     */
+    function newWorkedDay($requestData){
+        $data = $this->validateDataForStorageWorkDay($requestData);
+
+        $idPaymentPerEmployeePerDay = $this->saveWorkedDay($data['idEmployee'], $data['date'],
+            $data['baseAmountPaid'], $data['bonusTime'], $data['bonusDeliveries']);
+
+        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $data['idEmployeeType'],
+            $data['idEmployeeTypePerformed'], $data['contractType'], $data['hoursPerWorkDay'],
+            $data['paymentPerHour'], $data['perHourBonus'], $data['deliveries'], $data['bonusPerDelivery']);
 
         return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
     }

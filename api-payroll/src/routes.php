@@ -102,7 +102,7 @@ $app->post('/api/employee/workday', function ($request, $response) {
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($this->employeeApplication->SaveNewWorkDay($requestData)));
+        ->write(json_encode($this->employeeApplication->newWorkedDay($requestData)));
 });
 
 $app->get('/api/employee/salary/{code}', function (Request $request, Response $response, array $args) {
