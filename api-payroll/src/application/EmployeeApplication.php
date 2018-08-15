@@ -915,11 +915,25 @@ class EmployeeApplication{
         $results = $stmt->fetchAll();
 
         if(!$results){
-            throw new Exception("No data of the work day was found..");
+            throw new Exception("No data of the work day was found.");
         }
         $stmt = null;
 
-        return $results;
+        foreach($results as $row){
+            $data = array(
+                'idPaymentPerEmployeePerDay' => (int)$row['idPaymentPerEmployeePerDay'],
+                'idEmployeeType' => (int)$row['idEmployeeType'],
+                'idEmployeeTypePerformed' => (int)$row['idEmployeeTypePerformed'],
+                'contractType' => $row['contractType'],
+                'hoursWorked' => (int)$row['hoursWorked'],
+                'paymentPerHour' => (int)$row['paymentPerHour'],
+                'bonusPerHour' => (int)$row['bonusPerHour'],
+                'deliveries' => (int)$row['deliveries'],
+                'paymentPerDelivery' => (int)$row['paymentPerDelivery']
+            );
+        }
+
+        return $data;
     }
 
     /**

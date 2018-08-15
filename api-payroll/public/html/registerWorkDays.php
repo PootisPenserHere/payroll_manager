@@ -10,9 +10,17 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="workDaysSearchEmployee">Employee</label>
+                        <label class="col-md-4 control-label" for="workDaysSearchEmployee">Search employee</label>
                         <div class="col-md-5">
                             <input id="workDaysSearchEmployee" name="workDaysSearchEmployee" type="text" class="form-control input-md">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="workDaysSearchByDate">Search by date</label>
+                        <div class="col-md-2">
+                            <input id="workDaysSearchByDate" name="workDaysSearchByDate" type="text" class="form-control input-md datepicker">
                         </div>
                     </div>
                 </div>
