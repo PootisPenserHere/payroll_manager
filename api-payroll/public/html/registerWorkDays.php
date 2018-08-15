@@ -133,7 +133,7 @@
             </div>
             <div class="row col-md-offset-6">
                 <div class="form-group">
-                    <a href="#" class="btn btn-lg btn-success " onclick="saveNewWorkDay();">Save</a>
+                    <a href="#" class="btn btn-lg btn-success " onclick="processSaveActionWorkDay();">Save</a>
                 </div>
             </div>
         </div>
