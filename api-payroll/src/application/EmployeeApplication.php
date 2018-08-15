@@ -16,14 +16,13 @@ class EmployeeApplication{
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
-
-        $this->databaseSelectQueryErrorMessage = 'There was an error inserting the record.';
     }
 
     /**
      * A list of the types of employee used in the system
      *
      * @return array
+     * @throws Exception
      */
     function listEmployeeTypes(){
         $stmt = $this->pdo->prepare("SELECT
@@ -37,7 +36,7 @@ class EmployeeApplication{
         $results = $stmt->fetchAll();
 
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The types of employees could not be found..");
         }
         $stmt = null;
 
@@ -190,6 +189,7 @@ class EmployeeApplication{
     /**
      * @param $idEmployee
      * @return Integer
+     * @throws Exception
      */
     function getIdPersonByIdEmployee($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
@@ -206,7 +206,7 @@ class EmployeeApplication{
         $stmt->execute(array(':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("An error occurred while trying to find the person associated with the employee..");
         }
         $stmt = null;
 
@@ -216,6 +216,7 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return integer
+     * @throws Exception
      */
     function getIdEmployeeTypeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
@@ -232,7 +233,7 @@ class EmployeeApplication{
         $stmt->execute(array(':code' => $code));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -242,6 +243,7 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return integer
+     * @throws Exception
      */
     function getIdEmployeeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
@@ -259,7 +261,7 @@ class EmployeeApplication{
         $stmt->execute(array(':code' => $code));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -271,6 +273,7 @@ class EmployeeApplication{
      *
      * @param $idEmployee
      * @return array
+     * @throws Exception
      */
     function getEmployeeDataById($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
@@ -297,7 +300,7 @@ class EmployeeApplication{
         $stmt->execute(array(':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -310,6 +313,7 @@ class EmployeeApplication{
      *
      * @param $idEmployee
      * @return array
+     * @throws Exception
      */
     function proxyGetEmployeeDataById($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
@@ -520,6 +524,7 @@ class EmployeeApplication{
      * currently active in the system
      *
      * @return array
+     * @throws Exception
      */
     function getIdEmployeeFromAllActiveEmployees(){
         $stmt = $this->pdo->prepare("SELECT
@@ -533,7 +538,7 @@ class EmployeeApplication{
         $results = $stmt->fetchAll();
 
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -545,6 +550,7 @@ class EmployeeApplication{
      * all currently active employees
      *
      * @return array
+     * @throws Exception
      */
     function listAllActiveEmployees(){
         $ids = $this->getIdEmployeeFromAllActiveEmployees();
@@ -571,6 +577,7 @@ class EmployeeApplication{
      *
      * @param $partialName string
      * @return array
+     * @throws Exception
      */
     function findEmployeeByFullName($partialName){
         $fullList = $this->listAllActiveEmployees();
