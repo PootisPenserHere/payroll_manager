@@ -1,27 +1,43 @@
-# Slim Framework 3 Skeleton Application
+# The api
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework 3 application. This application uses the latest Slim 3 with the PHP-View template renderer. It also uses the Monolog logger.
+### Database
+##### The connection to the database is handled by pdo, it's configuraitions can be in the section mysql in the file
+#
+```
+src/settings.php
+```
 
-This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
+##### The default configurations for pdo are:
+#
+```
+PDO::ATTR_EMULATE_PREPARES
+```
+###### By default true, to lower the strain on the database by processing the prepare statements on the server side, if cashe performance is desired this option should be changed to fale
+#
+```
+PDO::ATTR_ERRMODE
+```
+######  Set to 'PDO::ERRMODE_EXCEPTION' which will return all mysql errors as exceptions to prevent further execution of the software
+#
 
-## Install the Application
+```
+PDO::ATTR_DEFAULT_FETCH_MODE
+```
+######  Set to 'PDO::FETCH_ASSOC' which will return the query output as an array of associative arrays where the alias or field name will be the key
 
-Run this command from the directory in which you want to install your new Slim Framework application.
+### Error handling
+##### Should an exception be encountered it'll be caught by a middleware that will form a new response body, returning it with a 500 http code and a json object containing the keys status set to error as well as a message key that will contain the exeption that was raised and caused the error.
 
-    php composer.phar create-project slim/slim-skeleton [my-app-name]
+### Sessions
+When a user logs into the system a session will be created by apache, handle with its default behaivor by a cookie.
 
-Replace `[my-app-name]` with the desired directory name for your new application. You'll want to:
+### Data protection
+Encryption has been applied to sensitive data, passwords are protected with with bcrypt and it's configuration can be found in the settings.php file, by default a cost of 12 is used for the hashing as well as a 16 characters randomly generated string (128 bits) as an iv.
 
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` is web writeable.
+For data that needs to be both read and written such as names AES in mode cbc with 256 block size has been used.
 
-To run the application in development, you can run these commands 
+The reason to have choosen AES is the desire to make the process of securing the data both secure and affordable since many hardware manufacturers already have architectures designed to improce the speed of AES.
 
-	cd [my-app-name]
-	php composer.phar start
+Important note: While in this project the encryption password has been saved into the settings.php file it's adviced that in a real use case it's stored more securely or else where entirely such as a key management service.
 
-Run this command in the application directory to run the test suite
-
-	php composer.phar test
-
-That's it! Now go build something cool.
+### The endpoints
