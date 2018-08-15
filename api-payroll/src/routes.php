@@ -102,7 +102,15 @@ $app->post('/api/employee/workday', function ($request, $response) {
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($this->employeeApplication->SaveNewWorkDay($requestData)));
+        ->write(json_encode($this->employeeApplication->newWorkedDay($requestData)));
+});
+
+$app->put('/api/employee/workday', function ($request, $response) {
+    $requestData = $request->getParsedBody();
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->updateWorkDay($requestData)));
 });
 
 $app->get('/api/employee/salary/{code}', function (Request $request, Response $response, array $args) {
@@ -111,4 +119,13 @@ $app->get('/api/employee/salary/{code}', function (Request $request, Response $r
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
         ->write(json_encode($this->employeeApplication->calculateSalaryByCode($code)));
+});
+
+$app->get('/api/employee/salary/date/{date}/code/{code}', function (Request $request, Response $response, array $args) {
+    $date = $args['date'];
+    $code = $args['code'];
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode($this->employeeApplication->getDataWorkDayByDateAndCode($date, $code)));
 });

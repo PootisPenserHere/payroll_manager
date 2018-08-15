@@ -95,5 +95,16 @@ class Asserts{
             throw new Exception($errorMessage);
         }
     }
+
+    /**
+     * @param $date
+     * @param $errorMessage
+     * @throws Exception
+     */
+    function dateIsNotInTheFuture($date, $errorMessage){
+        if ($date > date('Y-m-d')){
+            throw new Exception($errorMessage);
+        }
+    }
 }
 ?>

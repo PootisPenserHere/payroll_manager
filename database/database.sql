@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
   PRIMARY KEY  (`id`),
+  INDEX `idx_contractType` (`contractType`),
   UNIQUE (`code`)
 );
 
@@ -88,4 +89,26 @@ CREATE TABLE IF NOT EXISTS `paymentsPerEmployeePerDay` (
   PRIMARY KEY  (`id`),
   FOREIGN KEY (idEmployee) REFERENCES employees(id),
   UNIQUE (`idEmployee`, `date`, `status`)
+);
+
+DROP TABLE IF EXISTS paymentsPerEmployeePerDayDetail;
+CREATE TABLE IF NOT EXISTS `paymentsPerEmployeePerDayDetail` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idPaymentPerEmployeePerDay` INT UNSIGNED NOT NULL comment 'References the payment for the work day',
+  `idEmployeeType` INT UNSIGNED NOT NULL comment 'The type of employee',
+  `idEmployeeTypePerformed` INT UNSIGNED NOT NULL comment 'The employee working for the day as',
+  `contractType` ENUM('INTERNO', 'EXTERNO') NOT NULL comment 'The type of contract',
+  `hoursWorked` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Hours worked for the day',
+  `paymentPerHour` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Payment per hour worked',
+  `bonusPerHour` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Bonus payment per hour worked',
+  `deliveries` INT UNSIGNED NOT NULL DEFAULT 0 comment 'Total amount of deliveries for the day',
+  `paymentPerDelivery` DOUBLE(10,2) NOT NULL DEFAULT 0.0 comment 'Payment for each delivery done',
+  `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment 'The date on which the registry was created',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment 'The date of the last time the row was modified',
+  PRIMARY KEY  (`id`),
+  FOREIGN KEY (idPaymentPerEmployeePerDay) REFERENCES paymentsPerEmployeePerDay(id),
+  FOREIGN KEY (idEmployeeType) REFERENCES employeeType(id),
+  FOREIGN KEY (idEmployeeTypePerformed) REFERENCES employeeType(id),
+  FOREIGN KEY (contractType) REFERENCES employees(contractType)
 );

@@ -12,8 +12,6 @@ class SessionApplication{
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
-
-        $this->databaseSelectQueryErrorMessage = 'There was an error inserting the record.';
     }
 
     /**

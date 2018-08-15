@@ -16,17 +16,16 @@ class EmployeeApplication{
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
-
-        $this->databaseSelectQueryErrorMessage = 'There was an error inserting the record.';
     }
 
     /**
      * A list of the types of employee used in the system
      *
      * @return array
+     * @throws Exception
      */
     function listEmployeeTypes(){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         id, name
                                     FROM
                                         employeeType
@@ -37,7 +36,7 @@ class EmployeeApplication{
         $results = $stmt->fetchAll();
 
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The types of employees could not be found..");
         }
         $stmt = null;
 
@@ -63,11 +62,12 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
         $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO persons (firstName, middleName, lastName, birthDate, email, phone) 
+            $stmt = $this->pdo->prepare("INSERT INTO persons (firstName, middleName, lastName, birthDate, email, phone)
                                           VALUES (:firstName, :middleName, :lastName, :birthDate, :email, :phone)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':firstName' => $firstName, ':middleName' => $middleName, ':lastName' => $lastName,
@@ -99,7 +99,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType) 
+            $stmt = $this->pdo->prepare("INSERT INTO employees (idEmployeeType, idPerson, code, contractType)
                                           VALUES (:idEmployeeType, :idPerson, :code, :contractType)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':idEmployeeType' => $idEmployeeType, ':idPerson' => $idPerson, ':code' => $code,
@@ -140,6 +140,7 @@ class EmployeeApplication{
 
         $birthDate = $requestData['birthDate'];
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
 
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
@@ -190,12 +191,13 @@ class EmployeeApplication{
     /**
      * @param $idEmployee
      * @return Integer
+     * @throws Exception
      */
     function getIdPersonByIdEmployee($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                        COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                        COALESCE((SELECT
                                                         idPerson
                                                     FROM
                                                         employees
@@ -206,7 +208,7 @@ class EmployeeApplication{
         $stmt->execute(array(':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("An error occurred while trying to find the person associated with the employee..");
         }
         $stmt = null;
 
@@ -216,11 +218,12 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return integer
+     * @throws Exception
      */
     function getIdEmployeeTypeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT COALESCE((SELECT
                                         et.id
                                     FROM
                                         employees e
@@ -232,7 +235,7 @@ class EmployeeApplication{
         $stmt->execute(array(':code' => $code));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -242,12 +245,13 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return integer
+     * @throws Exception
      */
     function getIdEmployeeByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     id
                                                 FROM
                                                     employees
@@ -259,7 +263,7 @@ class EmployeeApplication{
         $stmt->execute(array(':code' => $code));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -271,11 +275,12 @@ class EmployeeApplication{
      *
      * @param $idEmployee
      * @return array
+     * @throws Exception
      */
     function getEmployeeDataById($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         e.id AS idEmployee,
                                         p.id AS idPerson,
                                         p.firstName,
@@ -297,7 +302,7 @@ class EmployeeApplication{
         $stmt->execute(array(':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -310,6 +315,7 @@ class EmployeeApplication{
      *
      * @param $idEmployee
      * @return array
+     * @throws Exception
      */
     function proxyGetEmployeeDataById($idEmployee){
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
@@ -341,6 +347,7 @@ class EmployeeApplication{
     /**
      * @param $code string
      * @return array
+     * @throws Exception
      */
     function getEmployeeDataByCode($code){
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
@@ -364,12 +371,13 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($firstName, "The first name can't be empty.");
         $this->asserts->isNotEmpty($middleName, "The middle name can't be empty.");
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
         $this->asserts->isNotEmpty($phone, "The phone number can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE persons 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE persons
+                                        SET
                                             firstName = :firstName,
                                             middleName = :middleName,
                                             lastName = :lastName,
@@ -402,8 +410,8 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($contractType, "The contract type can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE employees 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE employees
+                                        SET
                                             idEmployeeType = :idEmployeeType,
                                             code = :code,
                                             contractType = :contractType
@@ -423,6 +431,7 @@ class EmployeeApplication{
     /**
      * @param $requestData object
      * @return array
+     * @throws Exception
      */
     function updateEmployeeData($requestData){
         // Getting and validating the data
@@ -446,6 +455,7 @@ class EmployeeApplication{
 
         $birthDate = $requestData['birthDate'];
         $this->asserts->isNotEmpty($birthDate, "The birth date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($birthDate, "The birth date can't be in the future.");
 
         $email = $requestData['email'];
         $this->asserts->isNotEmpty($email, "The email can't be empty.");
@@ -498,8 +508,8 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         try {
-            $stmt = $this->pdo->prepare("UPDATE employees 
-                                        SET 
+            $stmt = $this->pdo->prepare("UPDATE employees
+                                        SET
                                             status = 'INACTIVE'
                                         WHERE
                                             id = :idEmployee");
@@ -520,9 +530,10 @@ class EmployeeApplication{
      * currently active in the system
      *
      * @return array
+     * @throws Exception
      */
     function getIdEmployeeFromAllActiveEmployees(){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         id
                                     FROM
                                         employees
@@ -533,7 +544,7 @@ class EmployeeApplication{
         $results = $stmt->fetchAll();
 
         if(!$results){
-            exit($this->databaseSelectQueryErrorMessage);
+            throw new Exception("The employee could not be found.");
         }
         $stmt = null;
 
@@ -545,6 +556,7 @@ class EmployeeApplication{
      * all currently active employees
      *
      * @return array
+     * @throws Exception
      */
     function listAllActiveEmployees(){
         $ids = $this->getIdEmployeeFromAllActiveEmployees();
@@ -571,6 +583,7 @@ class EmployeeApplication{
      *
      * @param $partialName string
      * @return array
+     * @throws Exception
      */
     function findEmployeeByFullName($partialName){
         $fullList = $this->listAllActiveEmployees();
@@ -582,6 +595,39 @@ class EmployeeApplication{
         });
 
         return $matches;
+    }
+
+    /**
+     * @param $idEmployee integer
+     * @param $date date
+     * @return integer
+     * @throws Exception
+     */
+    function findIdPaymentPerDayByEmployeeAndDate($idEmployee, $date){
+        $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $this->asserts->isNotEmpty($date, "The code can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
+
+        $stmt = $this->pdo->prepare("SELECT 
+                                    COALESCE((SELECT 
+                                                    id
+                                                FROM
+                                                    paymentsPerEmployeePerDay
+                                                WHERE
+                                                    date = :date AND idEmployee = :idEmployee),
+                                            0) AS id;
+                                    ");
+
+        $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+        $results = $stmt->fetchAll();
+        if(!$results){
+            throw new Exception("The registry of the worked day could not be found.");
+        }
+        $stmt = null;
+
+        return $results[0]['id'];
     }
 
     /**
@@ -598,9 +644,10 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
         $this->asserts->isNotEmpty($date, "The code can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     COUNT(*)
                                                 FROM
                                                     paymentsPerEmployeePerDay
@@ -612,7 +659,7 @@ class EmployeeApplication{
         $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
         $results = $stmt->fetchAll();
         if(!$results){
-            throw new Exception('Unable to determine the usage of date for the worked days.');
+            throw new Exception('Unable to find the date of the worked days.');
         }
         $stmt = null;
 
@@ -633,13 +680,14 @@ class EmployeeApplication{
     function saveWorkedDay($idEmployee, $date, $baseAmount, $bonusTime, $deliveries){
         $this->asserts->isNotEmpty($idEmployee, "The idEmployee can't be empty.");
         $this->asserts->isNotEmpty($date, "The date can't be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
         $this->asserts->isNotEmpty($baseAmount, "The base payment per day can't be empty.");
         $this->asserts->isNotEmpty($bonusTime, "The bonus per worked hours can't be empty.");
         $this->asserts->isNotEmpty($deliveries, "The payment for deliveries can't be empty.");
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDay 
-                                          (idEmployee, date, baseAmount, bonusTime, deliveries) 
+            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDay
+                                          (idEmployee, date, baseAmount, bonusTime, deliveries)
                                           VALUES (:idEmployee, :date, :baseAmount, :bonusTime, :deliveries)");
             $this->pdo->beginTransaction();
             $stmt->execute(array(':idEmployee' => $idEmployee, ':date' => $date, ':baseAmount' => $baseAmount,
@@ -657,14 +705,77 @@ class EmployeeApplication{
     }
 
     /**
-     * Takes the data from the front end for the new worked day for a
-     * employee and saves it
+     * Changes the status in the detail table for the registry of worked days so
+     * that it behaves as if deleted
+     * @param $idEmployee
+     * @param $date
+     */
+    function dissablePaymentPerDayDetailsByEmployeeAndDate($idEmployee, $date){
+        $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+        $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
+
+        try {
+            $stmt = $this->pdo->prepare("UPDATE paymentsPerEmployeePerDayDetail a
+                                                INNER JOIN
+                                            paymentsPerEmployeePerDay b ON b.id = a.idPaymentPerEmployeePerDay 
+                                        SET 
+                                            a.status = 'INACTIVE'
+                                        WHERE
+                                            b.date = :date AND b.idEmployee = :idEmployee");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':date' => $date, ':idEmployee' => $idEmployee));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
+     * @param $id integer - references paymentsPerEmployeePerDay
+     * @param $baseAmount double
+     * @param $bonusTime double
+     * @param $deliveries double
+     */
+    function updateWorkedDayPayments($id, $baseAmount, $bonusTime, $deliveries){
+        $this->asserts->higherThanZero($id, "id payment must be higher than 0");
+        $this->asserts->higherThanZero($baseAmount, "baseAmount must be higher than 0");
+        $this->asserts->higherThanZero($bonusTime, "bonusTime must be higher than 0");
+        $this->asserts->higherThanZero($deliveries, "deliveries must be higher than 0");
+
+        try {
+            $stmt = $this->pdo->prepare("UPDATE paymentsPerEmployeePerDay 
+                                        SET 
+                                            baseAmount = :baseAmount,
+                                            bonusTime = :bonusTime,
+                                            deliveries = :deliveries
+                                        WHERE
+                                            id = :id");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':baseAmount' => $baseAmount, ':bonusTime' => $bonusTime, ':deliveries' => $deliveries,
+                                ':id' => $id));
+            $this->pdo->commit();
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+        }
+    }
+
+    /**
+     * Takes the data from the front end for the work day, this coulld be
+     * for an update or a creation of a new registry
+     *
+     * The function will take the request body, validate it and pass the
+     * processed data back to the wrapper method
      *
      * @param $requestData object
      * @return array
      * @throws Exception
      */
-    function SaveNewWorkDay($requestData){
+    function validateDataForStorageWorkDay($requestData){
         $code = $requestData['code'];
         $this->asserts->isNotEmpty($code, "The code can't be empty.");
 
@@ -683,10 +794,7 @@ class EmployeeApplication{
 
         $date = $requestData['date'];
         $this->asserts->isNotEmpty($date, "The worked date cannot be empty.");
-
-        if($this->checkDateNotUsedWorkDayPerEmployee($idEmployee, $date) > 0){
-            throw new Exception("This date has already been saved as a worked day.");
-        }
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
 
         // The emplpoyee can't take that rol
         if($idEmployeeType != 3 and $idEmployeeType != $idEmployeeTypePerformed){
@@ -714,9 +822,72 @@ class EmployeeApplication{
         $bonusTime = $perHourBonus * $this->settings['hoursPerWorkDay'];
         $bonusDeliveries = $deliveries * $this->settings['bonusPerDelivery'];
 
-        $this->saveWorkedDay($idEmployee, $date, $baseAmountPaid, $bonusTime, $bonusDeliveries);
+        $contractType = $this->getContractTypeByEmployee($idEmployee);
+
+        $result = array(
+            'idEmployee' => (int)$idEmployee,
+            'date' => $date,
+            'baseAmountPaid' => $baseAmountPaid,
+            'bonusTime' => $bonusTime,
+            'bonusDeliveries' => $bonusDeliveries,
+            'contractType' => $contractType,
+            'idEmployeeType' => (int)$idEmployeeType,
+            'idEmployeeTypePerformed' => (int)$idEmployeeTypePerformed,
+            'hoursPerWorkDay' => $this->settings['hoursPerWorkDay'],
+            'paymentPerHour' => $this->settings['paymentPerHour'],
+            'perHourBonus' => $perHourBonus,
+            'deliveries' => $deliveries,
+            'bonusPerDelivery' => $this->settings['bonusPerDelivery']
+        );
+
+        return $result;
+    }
+
+    /**
+     * Wrapper function to store a new day that has been worked by an employee
+     *
+     * @param $requestData object
+     * @return array
+     * @throws Exception
+     */
+    function newWorkedDay($requestData){
+        $data = $this->validateDataForStorageWorkDay($requestData);
+
+        if($this->checkDateNotUsedWorkDayPerEmployee($data['idEmployee'], $data['date']) > 0){
+            throw new Exception("This date has already been saved as a worked day.");
+        }
+
+        $idPaymentPerEmployeePerDay = $this->saveWorkedDay($data['idEmployee'], $data['date'],
+            $data['baseAmountPaid'], $data['bonusTime'], $data['bonusDeliveries']);
+
+        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $data['idEmployeeType'],
+            $data['idEmployeeTypePerformed'], $data['contractType'], $data['hoursPerWorkDay'],
+            $data['paymentPerHour'], $data['perHourBonus'], $data['deliveries'], $data['bonusPerDelivery']);
 
         return array('status' => 'success', 'message' => 'The worked day has been saved.', 'data' => $requestData);
+    }
+
+    /**
+     * Wrapper method to update a worked day for an employee
+     *
+     * @param $requestData object
+     * @return array
+     * @throws Exception
+     */
+    function updateWorkDay($requestData){
+        $data = $this->validateDataForStorageWorkDay($requestData);
+
+        $this->dissablePaymentPerDayDetailsByEmployeeAndDate($data['idEmployee'], $data['date']);
+
+        $idPaymentPerEmployeePerDay = $this->findIdPaymentPerDayByEmployeeAndDate($data['idEmployee'], $data['date']);
+
+        $this->updateWorkedDayPayments($idPaymentPerEmployeePerDay, $data['baseAmountPaid'], $data['bonusTime'], $data['bonusDeliveries']);
+
+        $this->storeWorkDayDetails($idPaymentPerEmployeePerDay, $data['idEmployeeType'],
+            $data['idEmployeeTypePerformed'], $data['contractType'], $data['hoursPerWorkDay'],
+            $data['paymentPerHour'], $data['perHourBonus'], $data['deliveries'], $data['bonusPerDelivery']);
+
+        return array('status' => 'success', 'message' => 'The worked day has been updated.', 'data' => $requestData);
     }
 
     /**
@@ -735,13 +906,13 @@ class EmployeeApplication{
         $this->asserts->higherThanZero($year, "year must be higher than 0");
         $this->asserts->higherThanZero($month, "month must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
-                                    COALESCE((SELECT 
+        $stmt = $this->pdo->prepare("SELECT
+                                    COALESCE((SELECT
                                                     COUNT(*)
                                                 FROM
                                                     paymentsPerEmployeePerDay
                                                 WHERE
-                                                    idEmployee = :idEmployee 
+                                                    idEmployee = :idEmployee
                                                         AND YEAR(date) = :year
                                                         AND MONTH(date) = :month
                                                         AND status = 'ACTIVE'),
@@ -768,12 +939,12 @@ class EmployeeApplication{
      * @throws Exception
      */
     function getDataWorkedDaysByEmployee($idEmployee, $year, $month){
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         baseAmount, bonusTime, deliveries
                                     FROM
                                         paymentsPerEmployeePerDay
                                     WHERE
-                                        idEmployee = :idEmployee AND 
+                                        idEmployee = :idEmployee AND
                                             YEAR(date) = :year
                                             AND MONTH(date) = :month
                                             AND status = 'ACTIVE'");
@@ -798,7 +969,7 @@ class EmployeeApplication{
         $this->asserts->isNotEmpty($idEmployee, "The code can't be empty.");
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
 
-        $stmt = $this->pdo->prepare("SELECT 
+        $stmt = $this->pdo->prepare("SELECT
                                         contractType
                                     FROM
                                         employees
@@ -813,6 +984,121 @@ class EmployeeApplication{
         $stmt = null;
 
         return $results[0]['contractType'];
+    }
+
+    /**
+     * Creates a backup of the information used to calculate the amount that the employee
+     * will be paid for the submitted day
+     *
+     * @param $idPaymentPerEmployeePerDay integer
+     * @param $idEmployeeType integer
+     * @param $idEmployeeTypePerformed integer
+     * @param $contractType string
+     * @param $hoursWorked double
+     * @param $paymentPerHour double
+     * @param $bonusPerHour double
+     * @param $deliveries integer
+     * @param $paymentPerDelivery double
+     * @return integer
+     * @throws Exception
+     */
+    function storeWorkDayDetails($idPaymentPerEmployeePerDay, $idEmployeeType, $idEmployeeTypePerformed, $contractType, $hoursWorked,
+                                 $paymentPerHour, $bonusPerHour, $deliveries, $paymentPerDelivery){
+        $this->asserts->isNotEmpty($idPaymentPerEmployeePerDay, "The idPaymentPerEmployeePerDay can't be empty.");
+        $this->asserts->isNotEmpty($idEmployeeType, "The idEmployeeType can't be empty.");
+        $this->asserts->isNotEmpty($idEmployeeTypePerformed, "The idEmployeeTypePerformed can't be empty.");
+        $this->asserts->isNotEmpty($contractType, "The contractType can't be empty.");
+        $this->asserts->isNotEmpty($hoursWorked, "The hoursWorked can't be empty.");
+        $this->asserts->isNotEmpty($paymentPerHour, "The paymentPerHour can't be empty.");
+        $this->asserts->isNotEmpty($bonusPerHour, "The bonusPerHour can't be empty.");
+        $this->asserts->isNotEmpty($deliveries, "The deliveries can't be empty.");
+        $this->asserts->isNotEmpty($paymentPerDelivery, "The paymentPerDelivery can't be empty.");
+
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO paymentsPerEmployeePerDayDetail
+                                            (idPaymentPerEmployeePerDay, idEmployeeType, idEmployeeTypePerformed,
+                                            contractType, hoursWorked, paymentPerHour, bonusPerHour, deliveries, paymentPerDelivery)
+                                        VALUES
+                                            (:idPaymentPerEmployeePerDay, :idEmployeeType, :idEmployeeTypePerformed,
+                                            :contractType, :hoursWorked, :paymentPerHour, :bonusPerHour, :deliveries, :paymentPerDelivery)");
+            $this->pdo->beginTransaction();
+            $stmt->execute(array(':idPaymentPerEmployeePerDay' => $idPaymentPerEmployeePerDay,
+                ':idEmployeeType' => $idEmployeeType,
+                ':idEmployeeTypePerformed' => $idEmployeeTypePerformed,
+                ':contractType' => $contractType,
+                ':hoursWorked' => $hoursWorked,
+                ':paymentPerHour' => $paymentPerHour,
+                ':bonusPerHour' => $bonusPerHour,
+                ':deliveries' => $deliveries,
+                ':paymentPerDelivery' => $paymentPerDelivery)
+            );
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+
+            return $id;
+
+            $stmt = null;
+        } catch( PDOExecption $e ) {
+            $this->pdo->rollback();
+            throw new Exception("An error occured while saving the work day details.");
+        }
+    }
+
+    /**
+     * @param $date date
+     * @param $code string
+     * @return array
+     * @throws Exception
+     */
+    function getDataWorkDayByDateAndCode($date, $code){
+        $idEmployee = $this->getIdEmployeeByCode($code);
+        $this->asserts->dateIsNotInTheFuture($date, "The date can't be in the future.");
+
+        $stmt = $this->pdo->prepare("SELECT
+                                        b.idPaymentPerEmployeePerDay,
+                                        b.idEmployeeType,
+                                        b.idEmployeeTypePerformed,
+                                        b.contractType,
+                                        b.hoursWorked,
+                                        b.paymentPerHour,
+                                        b.bonusPerHour,
+                                        b.deliveries,
+                                        b.paymentPerDelivery
+                                    FROM
+                                        paymentsPerEmployeePerDay a
+                                            INNER JOIN
+                                        paymentsPerEmployeePerDayDetail b ON b.idPaymentPerEmployeePerDay = a.id
+                                    WHERE
+                                        a.idEmployee = :idEmployee
+                                            AND a.date = :date
+                                            AND a.status = 'ACTIVE'
+                                            AND b.status = 'ACTIVE'
+                                    ORDER BY b.id DESC
+                                    LIMIT 1");
+        $stmt->execute(array(':idEmployee' => $idEmployee, ':date' => $date));
+
+        $results = $stmt->fetchAll();
+
+        if(!$results){
+            throw new Exception("No data of the work day was found.");
+        }
+        $stmt = null;
+
+        foreach($results as $row){
+            $data = array(
+                'idPaymentPerEmployeePerDay' => (int)$row['idPaymentPerEmployeePerDay'],
+                'idEmployeeType' => (int)$row['idEmployeeType'],
+                'idEmployeeTypePerformed' => (int)$row['idEmployeeTypePerformed'],
+                'contractType' => $row['contractType'],
+                'hoursWorked' => (int)$row['hoursWorked'],
+                'paymentPerHour' => (int)$row['paymentPerHour'],
+                'bonusPerHour' => (int)$row['bonusPerHour'],
+                'deliveries' => (int)$row['deliveries'],
+                'paymentPerDelivery' => (int)$row['paymentPerDelivery']
+            );
+        }
+
+        return $data;
     }
 
     /**

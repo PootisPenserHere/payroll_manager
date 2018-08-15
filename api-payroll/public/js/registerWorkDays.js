@@ -7,7 +7,7 @@ $(document).ready(function(){
     loadEmployeeTypesForWorkDays();
 
     $('.datepicker').datepicker({
-        format: "yyyy/mm/dd",
+        format: "yyyy-mm-dd",
         autoclose: true
     });
 
@@ -213,6 +213,21 @@ function loadSalaryDetails(code){
     });
 }
 
+/**
+ * Bootstraper for the save action
+ *
+ * If the search by date function has been used it's then assumed that the
+ * desired action is to update else the function will attempt to create a new
+ * record for the worked day
+ */
+function processSaveActionWorkDay(){
+    if($('#workDaysSearchByDate').val() === ''){
+        saveNewWorkDay();
+    }else {
+        updateNewWorkDay();
+    }
+}
+
 function saveNewWorkDay(){
     let baseUrl = getbaseUrl();
 
@@ -253,3 +268,92 @@ function saveNewWorkDay(){
         },
     });
 }
+
+function updateNewWorkDay(){
+    let baseUrl = getbaseUrl();
+
+    let parameters = {
+        "code":$('#hidenEmployeeCodeForWorkDaysCode').val(),
+        "idEmployeeTypePerformed":$('#workDaysEmployeePerformedRol').val(),
+        "deliveries":$('#workDaysEmployeeDeliveries').val(),
+        "date":$('#workDaysEmployeeWorkedDay').val(),
+    };
+
+    $.ajax({
+        url: baseUrl + '/api/employee/workday',
+        type: 'PUT',
+        dataType: 'json',
+        data: parameters,
+        success:function(data){
+            $('#modalServerResponseSuccess').modal('show');
+            document.getElementById('serverResponseSuccess').innerHTML = data['message'];
+            loadSalaryDetails($('#hidenEmployeeCodeForWorkDaysCode').val());
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+}
+
+/**
+ * If the search by date field is changed from its default empty status it'll
+ * load the data of the given work day and enable the update mode
+ */
+$('#workDaysSearchByDate').on("change", function(data){
+    let baseUrl = getbaseUrl();
+    let date = $(this).val();
+    let code = $('#hidenEmployeeCodeForWorkDaysCode').val();
+
+    // The employee hasn't been picked
+    if (code === ''){
+        $('#modalServerResponseError').modal('show');
+        document.getElementById('modalResponseError').innerHTML = 'Please select an employee in the search form first.';
+        return false; // Exits the function
+    }
+
+    $.ajax({
+        url: baseUrl + '/api/employee/salary/date/' + date + '/code/' + code,
+        type: 'GET',
+        dataType: 'json',
+        success:function(data){
+            $('#workDaysEmployeeRol').val(data['idEmployeeType']);
+            $('#workDaysEmployeeContractType').val(data['contractType']);
+            $('#workDaysEmployeeWorkedDay').val(date);
+            $('#workDaysEmployeeDeliveries').val(data['deliveries']);
+            $('#workDaysEmployeePerformedRol').val(data['idEmployeeTypePerformed']);
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+});
