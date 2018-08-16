@@ -20,7 +20,7 @@ return [
         'session' => [
             // Session cookie settings
             'name'           => 'payroll-laziness-rocks',
-            'lifetime'       => 1,
+            'lifetime'       => 10,
             'path'           => '/',
             'domain'         => "laziness.rocks",
             'secure'         => false,
@@ -36,7 +36,7 @@ return [
             'cache_limiter'  => 'nocache',
 
             // Extend session lifetime after each user activity
-            'autorefresh'    => false,
+            'autorefresh'    => true,
 
             // Encrypt session data if string is set
             'encryption_key' => '7de431684c34cf2c898268cff71392f38c4175dde050c9ee69502b81571484e0',
