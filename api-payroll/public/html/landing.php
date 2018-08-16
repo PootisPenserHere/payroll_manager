@@ -1,12 +1,3 @@
-<?php
-session_start();
-
-if(!isset($_SESSION['userName'])){
-    header("Location: ./login.php");
-    exit();
-}
-?>
-
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 
@@ -39,10 +30,6 @@ if(!isset($_SESSION['userName'])){
 
                             <li>
                                 <a href="#" data-nav_accion="registerWorkDays.php" ><span class="glyphicon glyphicon-tasks"></span> Management</a>
-                            </li>
-
-                            <li>
-                                <a href="#" onclick="loadView();"><span class="glyphicon glyphicon-wrench"></span> Change password</a>
                             </li>
                         </ul>
                     <ul class="nav navbar-nav navbar-right">

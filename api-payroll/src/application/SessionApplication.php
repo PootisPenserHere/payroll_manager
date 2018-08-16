@@ -87,6 +87,11 @@ class SessionApplication{
 
         if($this->cryptographyService->decryptPassword($password, $storedPassword)){
             $this->session->set('userName', $userName);
+
+            if(!$this->verifySession()){
+                throw new Exception('An error occurred while trying to create the session.');
+            }
+
             return true;
         }
         else{
@@ -119,9 +124,14 @@ class SessionApplication{
 
     /**
      * @return array
+     * @throws Exception
      */
     function destroySession(){
         $this->session->clear();
+
+        if($this->verifySession()){
+            throw new Exception('An error occurred while trying to end the session.');
+        }
 
         return array('status' => 'success', 'message' => 'Successfully logged out.');
     }

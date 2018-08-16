@@ -22,7 +22,7 @@ return [
             'name'           => 'payroll-laziness-rocks',
             'lifetime'       => 10,
             'path'           => '/',
-            'domain'         => "laziness.rocks",
+            'domain'         => null,
             'secure'         => false,
             'httponly'       => true,
 

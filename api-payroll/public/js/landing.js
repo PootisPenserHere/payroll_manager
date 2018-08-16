@@ -13,12 +13,15 @@ function logout() {
             window.location.replace(baseUrl + '/html/login.php');
         },
         error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
             if (x.status==0) {
                 $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
                 $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modalError500').modal('show');
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
                 $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
@@ -59,12 +62,15 @@ function loadView(requestedView){
             $("#newViewBody").hide().html(data).show('slow');
         },
         error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
             if (x.status==0) {
                 $('#modalErrorInternetConnection').modal('show');
             } else if(x.status==404) {
                 $('#modalError404').modal('show');
             } else if(x.status==500) {
-                $('#modalError500').modal('show');
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
             } else if(e=='parsererror') {
                 $('#modalErrorParsererror').modal('show');
             } else if(e=='timeout'){
