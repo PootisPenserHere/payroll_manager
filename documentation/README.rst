@@ -35,15 +35,38 @@ Functional requirements
 
 In
 -----
+- Employee details
+  - First name
+  - Middle name
+  - Last name
+  - Birth date
+  - Email
+  - Phone number
+- Work per day
+  - Number of deliveries
+  - Rol performed
 
 Procesos
 -----------
+- Register a new employee
+- Modify employee
+- Search employee
+- Add new work day for employee
+- Calculate monthly payment for employee
 
 Out
 -----
-
+- Upong registering
+  - Employee code
+- In the work days registry
+  - Raw salary for the the month
+  - Taxes discounted
+  - Real salary for the month
+  - Vouchers (if applicable)
+ 
 Tests
 -------
+here go the tests
 
 Tools and software used
 ------
