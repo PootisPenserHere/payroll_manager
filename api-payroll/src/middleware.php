@@ -20,3 +20,5 @@ $app->add(new \Tuupola\Middleware\Cors([
             ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
 ]));
+
+$app->add(new \Adbar\SessionMiddleware($app->getContainer()->get('settings')['session']));
