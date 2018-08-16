@@ -15,7 +15,7 @@ The system uses cookie based sessions which are handled by a midleware, have a t
 Database
 ---------
 To connect to the database pdo is used, its configuration can be found at **src/settings.php** under the mysql section. The following settings are set as default:
-    **PDO::ATTR_EMULATE_PREPARES** Has been set to true in order to lower the strain on the database by processing the prepare statements on the server side, if cache performance is desired this option should be changed to false
+     - **PDO::ATTR_EMULATE_PREPARES** Has been set to true in order to lower the strain on the database by processing the prepare statements on the server side, if cache performance is desired this option should be changed to false
     - **PDO::ATTR_ERRMODE** Uses **PDO::ERRMODE_EXCEPTION** which will return all mysql errors as exceptions to prevent further execution of the software
     - **PDO::ATTR_DEFAULT_FETCH_MODE** uses **PDO::FETCH_ASSOC** and as such the query ouput system wide is expected as an associative array
 
