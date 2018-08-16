@@ -4,11 +4,13 @@ namespace App\Application;
 use Exception;
 
 class SessionApplication{
+    private $session;
     private $pdo;
     private $cryptographyService;
     private $asserts;
 
-    function __construct($mysql, $cryptographyService, $asserts){
+    function __construct($session, $mysql, $cryptographyService, $asserts){
+        $this->session = $session;
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
@@ -18,7 +20,8 @@ class SessionApplication{
      * @return bool
      */
     function verifySession(){
-        return isset($_SESSION['userName']);
+        $userName = $this->session->get('userName');
+        return isset($userName);
     }
 
     /**
@@ -30,7 +33,7 @@ class SessionApplication{
         $session['loggedIn'] = $this->verifySession();
 
         if($this->verifySession()){
-            $session['userName'] = $_SESSION['userName'];
+            $session['userName'] = $this->session->get('userName');
         }
 
         return $session;
@@ -83,7 +86,12 @@ class SessionApplication{
         }
 
         if($this->cryptographyService->decryptPassword($password, $storedPassword)){
-            $_SESSION['userName'] = $userName;
+            $this->session->set('userName', $userName);
+
+            if(!$this->verifySession()){
+                throw new Exception('An error occurred while trying to create the session.');
+            }
+
             return true;
         }
         else{
@@ -116,9 +124,14 @@ class SessionApplication{
 
     /**
      * @return array
+     * @throws Exception
      */
     function destroySession(){
-        session_destroy();
+        $this->session->clear();
+
+        if($this->verifySession()){
+            throw new Exception('An error occurred while trying to end the session.');
+        }
 
         return array('status' => 'success', 'message' => 'Successfully logged out.');
     }

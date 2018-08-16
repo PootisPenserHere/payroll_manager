@@ -9,13 +9,28 @@ class EmployeeApplication{
     private $cryptographyService;
     private $asserts;
     private $settings;
+    private $session;
 
-    function __construct($employeeSettings, $mysql, $cryptographyService, $asserts){
+    /**
+     * EmployeeApplication constructor.
+     * @param $employeeSettings
+     * @param $mysql
+     * @param $cryptographyService
+     * @param $asserts
+     * @param $session
+     * @throws Exception
+     */
+    function __construct($employeeSettings, $mysql, $cryptographyService, $asserts, $session){
         $this->settings = $employeeSettings;
 
         $this->cryptographyService = $cryptographyService;
         $this->pdo = $mysql;
         $this->asserts = $asserts;
+        $this->session = $session;
+
+        if(!$this->session->verifySession()){
+            throw new Exception('A session is requited to access this resouerce.');
+        };
     }
 
     /**
@@ -81,7 +96,6 @@ class EmployeeApplication{
         } catch( PDOExecption $e ) {
             $this->pdo->rollback();
             throw new Exception('There was an error while trying to save a new person.');
-            $this->logger->warning("There was an error in the EmployeeApplication->saveNewPerson caused by: $e ");
         }
     }
 
