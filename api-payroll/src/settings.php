@@ -16,6 +16,35 @@ return [
             'level' => \Monolog\Logger::DEBUG,
         ],
 
+        // Session handle settings
+        'session' => [
+            // Session cookie settings
+            'name'           => 'payroll-laziness-rocks',
+            'lifetime'       => 10,
+            'path'           => '/',
+            'domain'         => null,
+            'secure'         => false,
+            'httponly'       => true,
+
+            // Set session cookie path, domain and secure automatically
+            'cookie_autoset' => true,
+
+            // Path where session files are stored, PHP's default path will be used if set null
+            'save_path'      => null,
+
+            // Session cache limiter
+            'cache_limiter'  => 'nocache',
+
+            // Extend session lifetime after each user activity
+            'autorefresh'    => true,
+
+            // Encrypt session data if string is set
+            'encryption_key' => '7de431684c34cf2c898268cff71392f38c4175dde050c9ee69502b81571484e0',
+
+            // Session namespace
+            'namespace'      => 'slim'
+        ],
+
         // Cryptography settings
         'cryptography' => [
             'encryptionAlgorithm' => 'AES-256-CBC',

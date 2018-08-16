@@ -4,9 +4,96 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "93a9656f4e6eb0e25be1bad59ac6f487",
-    "content-hash": "a3fc18885cc45d2733b77fa2081bdc72",
+    "hash": "19bc193d641803843178e87bf0465afe",
+    "content-hash": "9eb8d110ad374a60767f92d76018504a",
     "packages": [
+        {
+            "name": "adbario/php-dot-notation",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adbario/php-dot-notation.git",
+                "reference": "5e4b1fe29a8ae1140e370d520ed8b85dd5130a1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adbario/php-dot-notation/zipball/5e4b1fe29a8ae1140e370d520ed8b85dd5130a1f",
+                "reference": "5e4b1fe29a8ae1140e370d520ed8b85dd5130a1f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Adbar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Riku Särkinen",
+                    "email": "riku@adbar.io"
+                }
+            ],
+            "description": "PHP dot notation array access",
+            "homepage": "https://github.com/adbario/php-dot-notation",
+            "keywords": [
+                "ArrayAccess",
+                "dotnotation",
+                "php"
+            ],
+            "time": "2017-03-26 17:44:47"
+        },
+        {
+            "name": "adbario/slim-secure-session-middleware",
+            "version": "1.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adbario/slim-secure-session-middleware.git",
+                "reference": "f107191506b2c362f06f201f998891f315d6aaec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adbario/slim-secure-session-middleware/zipball/f107191506b2c362f06f201f998891f315d6aaec",
+                "reference": "f107191506b2c362f06f201f998891f315d6aaec",
+                "shasum": ""
+            },
+            "require": {
+                "adbario/php-dot-notation": "~1.2.0",
+                "paragonie/random_compat": "^2.0",
+                "php": ">=5.5",
+                "slim/slim": "~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Adbar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Riku Särkinen",
+                    "email": "riku@adbar.io"
+                }
+            ],
+            "description": "Secure session middleware for Slim 3 framework",
+            "homepage": "https://github.com/adbario/slim-secure-session-middleware",
+            "keywords": [
+                "middleware",
+                "session",
+                "slim"
+            ],
+            "time": "2017-08-04 13:51:00"
+        },
         {
             "name": "container-interop/container-interop",
             "version": "1.2.0",
@@ -216,6 +303,55 @@
                 "routing"
             ],
             "time": "2018-02-13 20:26:39"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v2.0.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2018-07-04 16:31:37"
         },
         {
             "name": "pimple/pimple",

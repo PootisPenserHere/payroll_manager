@@ -18,6 +18,13 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+// Session handler
+$container['session'] = function ($container) {
+    return new \Adbar\Session(
+        $container->get('settings')['session']['namespace']
+    );
+};
+
 // Mysql connection
 $container['mysql'] = function ($c) {
     $mysqlSettings = $c->get('settings')['mysql'];
@@ -60,7 +67,8 @@ $container['asserts'] = function ($c) {
 
 // The session application
 $container['sessionApplication'] = function ($c) {
-    $sessionApplication = new App\Application\SessionApplication($c['mysql'], $c['cryptographyService'], $c['asserts']);
+    $sessionApplication = new App\Application\SessionApplication($c['session'], $c['mysql'],
+        $c['cryptographyService'], $c['asserts']);
     return $sessionApplication;
 };
 
@@ -68,6 +76,6 @@ $container['sessionApplication'] = function ($c) {
 $container['employeeApplication'] = function ($c) {
     $employeeSettings = $c->get('settings')['employee'];
     $employeeApplication = new App\Application\EmployeeApplication($employeeSettings,
-        $c['mysql'], $c['cryptographyService'], $c['asserts']);
+        $c['mysql'], $c['cryptographyService'], $c['asserts'], $c['sessionApplication']);
     return $employeeApplication;
 };
