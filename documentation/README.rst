@@ -61,6 +61,10 @@ Out:
         - Taxes discounted
         - Real salary for the month
         - Vouchers (if applicable)
+        
+Calculating the monthly salary
+--------------------------------
+.. image:: https://raw.githubusercontent.com/PootisPenserHere/payroll_manager/Diagrams/master/calculatingSalary.bmp
  
 Tests cases
 -----------------
