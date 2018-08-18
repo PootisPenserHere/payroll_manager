@@ -64,7 +64,7 @@ Out:
         
 Calculating the monthly salary
 --------------------------------
-.. image:: https://raw.githubusercontent.com/PootisPenserHere/payroll_manager/Diagrams/master/calculatingSalary.bmp
+.. image:: https://raw.githubusercontent.com/PootisPenserHere/payroll_manager/master/documentation/calculatingSalary.bmp
  
 Tests cases
 -----------------
