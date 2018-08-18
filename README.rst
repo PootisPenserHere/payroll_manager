@@ -43,10 +43,9 @@ To install docker compose
 
     sudo chmod +x /usr/local/bin/docker-compose
 
-And finally the containers can be initialized by running 
-
+And finally the containers can be initialized by running
 .. code-block:: bash
-    sudo docker-compose up --build -d
+   sudo docker-compose up --build -d
     
 Sign in
 -----------------
