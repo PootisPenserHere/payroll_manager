@@ -103,6 +103,7 @@
                 <div class="row col-md-offset-6">
                     <div class="form-group">
                         <a href="#" class="btn btn-lg btn-success " onclick="updateEmployee();">Update</a>
+                        <a href="#" class="btn btn-lg btn-primary " onclick="loadView(currentView);">Clear</a>
                     </div>
                 </div>
             </div>
