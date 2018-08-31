@@ -134,6 +134,43 @@ function loadEmployeeData(code){
     });
 }
 
+/**
+ * Will change the status of an employee to remove them from the
+ * active employee list
+ */
+function deleteEmployee(){
+    let baseUrl = getbaseUrl();
+    let code = $('#editEmployeeCode').val();
+
+    $.ajax({
+        url: baseUrl + '/api/employee/' + code,
+        type: 'DELETE',
+        dataType: 'json',
+        success:function(data){
+            $('#modalServerResponseSuccess').modal('show');
+            document.getElementById('serverResponseSuccess').innerHTML = 'The employee ' + data['firstName'] + ' ' + data['middleName'] + ' ' + data['lastName'] + ' has been deleted.';
+        },
+        error:function(x,e) {
+            let responseText = $.parseJSON(x["responseText"]);
+
+            if (x.status==0) {
+                $('#modalErrorInternetConnection').modal('show');
+            } else if(x.status==404) {
+                $('#modalError404').modal('show');
+            } else if(x.status==500) {
+                $('#modalServerResponseError').modal('show');
+                document.getElementById('modalResponseError').innerHTML = responseText['message'];
+            } else if(e=='parsererror') {
+                $('#modalErrorParsererror').modal('show');
+            } else if(e=='timeout'){
+                $('#modalErrorTimeout').modal('show');
+            } else {
+                $('#modalErrorOther').modal('show');
+            }
+        },
+    });
+}
+
 function updateEmployee(){
     let baseUrl = getbaseUrl();
 

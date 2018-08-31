@@ -104,6 +104,7 @@
                     <div class="form-group">
                         <a href="#" class="btn btn-lg btn-success " onclick="updateEmployee();">Update</a>
                         <a href="#" class="btn btn-lg btn-primary " onclick="loadView(currentView);">Clear</a>
+                        <a href="#" class="btn btn-lg btn-danger " onclick="deleteEmployee();">Delete</a>
                     </div>
                 </div>
             </div>
