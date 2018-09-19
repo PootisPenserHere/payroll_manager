@@ -518,8 +518,18 @@ class EmployeeApplication{
         return $response;
     }
 
-    function disableEmployeeRecord($idEmployee){
+    /**
+     * @param $code string
+     * @return array
+     * @throws Exception
+     */
+    function disableEmployeeRecord($code){
+        $this->asserts->isNotEmpty($code, "The code can't be empty.");
+
+        $idEmployee = $this->getIdEmployeeByCode($code);
         $this->asserts->higherThanZero($idEmployee, "idEmployee must be higher than 0");
+
+        $employeeData = $this->proxyGetEmployeeDataById($idEmployee);
 
         try {
             $stmt = $this->pdo->prepare("UPDATE employees
@@ -532,8 +542,12 @@ class EmployeeApplication{
             $this->pdo->commit();
 
             $stmt = null;
+
+            return $employeeData;
+
         } catch( PDOExecption $e ) {
             $this->pdo->rollback();
+            throw new Exception("The employee you tried to delete could not be found.");
         }
     }
 

@@ -1,3 +1,6 @@
+// will contain the current loaded view
+let currentView;
+
 /**
  * Destorys the session for the current user and redirects
  * back to the login form
@@ -59,6 +62,8 @@ function loadView(requestedView){
         url: baseUrl + '/html/' + requestedView,
         type: 'get',
         success:function(data){
+	    currentView = requestedView;
+
             $("#newViewBody").hide().html(data).show('slow');
         },
         error:function(x,e) {
@@ -80,4 +85,12 @@ function loadView(requestedView){
             }
         },
     });
+}
+
+/**
+* Reloads the last view that was accessed as a way of fully clearing and
+* resetting the values of the form
+*/
+function clearView(view){
+    loadView(view);
 }
